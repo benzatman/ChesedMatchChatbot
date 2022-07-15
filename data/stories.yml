@@ -1,0 +1,41 @@
+version: "2.0"
+
+stories:
+
+- story: chesed_match
+  steps:
+  - intent: greet
+  - action: utter_intro
+  - action: utter_ask_country
+  - intent: inform_country
+    entities:
+      - country: IL
+  - action: action_get_city
+  - intent: inform_city
+    entities:
+      - city: Jerusalem
+  - action: action_get_category
+  - intent: inform_category
+    entities:
+      - category: shul
+  - action: action_chesed_match
+
+- story: chesed_match start over
+  steps:
+  - intent: start_over
+  - action: utter_intro
+  - action: utter_ask_country
+  - intent: inform_country
+    entities:
+      - country: US
+  - action: action_get_city
+  - intent: inform_city
+    entities:
+      - city: Manhattan
+  - action: action_get_category
+  - intent: inform_category
+    entities:
+      - category: bikur cholim
+  - action: action_chesed_match
+
+

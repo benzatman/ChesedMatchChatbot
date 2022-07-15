@@ -1,0 +1,78 @@
+version: "2.0"
+
+intents:
+  - greet
+  - inform_city
+  - inform_country
+  - inform_category
+  - start_over
+
+entities:
+  - country:
+      use_entities: true
+  - city:
+      use_entities: true
+  - category:
+      use_entities: true
+
+slots:
+  country:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: false
+    influence_conversation: false
+  city:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: false
+    influence_conversation: false
+
+
+responses:
+  utter_intro:
+  - text: "Hey! Welcome to the Just One Chesed ChesedMatch ChatBot, Please answer a few questions so we can help you the best we can. You can write 'start over' at any point to go back to the main menu"
+
+  utter_ask_country:
+  - text: "Please select your country from below"
+    buttons:
+    - title: "USA"
+      payload: '/inform_country{{"country": "US"}}'
+    - title: "Israel"
+      payload: '/inform_country{{"country": "IL"}}'
+    - title: "Canada"
+      payload: '/inform_country{{"country": "CA"}}'
+    - title: "Great Britain"
+      payload: '/inform_country{{"country": "GB"}}'
+    - title: "Australia"
+      payload: '/inform_country{{"country": "AU"}}'
+    - title: "Belgium"
+      payload: '/inform_country{{"country": "BE"}}'
+    - title: "France"
+      payload: '/inform_country{{"country": "FR"}}'
+    - title: "Denmark"
+      payload: '/inform_country{{"country": "DK"}}'
+    - title: "Japan"
+      payload: '/inform_country{{"country": "JP"}}'
+    - title: "South Korea"
+      payload: '/inform_country{{"country": "KR"}}'
+    - title: "Mexico"
+      payload: '/inform_country{{"country": "MX"}}'
+    - title: "Russia"
+      payload: '/inform_country{{"country": "RU"}}'
+    - title: "Ukraine"
+      payload: '/inform_country{{"country": "UA"}}'
+    - title: "South Africa"
+      payload: '/inform_country{{"country": "ZA"}}'
+    - title: "Switzerland"
+      payload: '/inform_country{{"country": "CH"}}'
+    - title: "UAE"
+      payload: '/inform_country{{"country": "AE"}}'
+
+actions:
+  - action_get_city
+  - action_get_category
+  - action_chesed_match
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true

@@ -1,0 +1,5 @@
+rasa==2.8.7
+rasa-sdk==2.8.2
+fuzzywuzzy==0.18.0
+pandas==1.2.4
+geopy==2.2.0
