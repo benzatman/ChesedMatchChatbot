@@ -139,28 +139,31 @@ class ActionChesedMatch(Action):
             else:
                 response = f'I searched for {category} near {location} and this is what I found: '
 
-                chesed_matches_t1_sorted = sorted(chesed_matches_t1, key=lambda x: x[1])
-                chesed_matches_t2_sorted = sorted(chesed_matches_t2, key=lambda x: x[1])
+                if len(chesed_matches_t1) != 0:
+                    chesed_matches_t1_sorted = sorted(chesed_matches_t1, key=lambda x: x[1])
 
-                for match in chesed_matches_t1_sorted:
-                    row = country_df.iloc[match[0]]
-                    response += f'\n' \
-                                f' \n Name: {row["name"]}' \
-                                f' \n Phone Number: {row["phone_number"]}' \
-                                f' \n About: {row["quote"]}' \
-                                f' \n Link: {row["full_filename"]}'
+                    for match in chesed_matches_t1_sorted:
+                        row = country_df.iloc[match[0]]
+                        response += f'\n' \
+                                    f' \n Name: {row["name"]}' \
+                                    f' \n Phone Number: {row["phone_number"]}' \
+                                    f' \n About: {row["quote"]}' \
+                                    f' \n Link: {row["full_filename"]}'
 
-                num_matches = len(chesed_matches_t1_sorted)
-                for match in chesed_matches_t2_sorted:
-                    row = country_df.iloc[match[0]]
-                    response += f'\n' \
-                                f' \n Name: {row["name"]}' \
-                                f' \n Phone Number: {row["phone_number"]}' \
-                                f' \n About: {row["quote"]}' \
-                                f' \n Link: {row["full_filename"]}'
-                    num_matches += 1
-                    if num_matches == 10:
-                        break
+                if len(chesed_matches_t2) != 0:
+                    chesed_matches_t2_sorted = sorted(chesed_matches_t2, key=lambda x: x[1])
+
+                    num_matches = len(chesed_matches_t1)
+                    for match in chesed_matches_t2_sorted:
+                        row = country_df.iloc[match[0]]
+                        response += f'\n' \
+                                    f' \n Name: {row["name"]}' \
+                                    f' \n Phone Number: {row["phone_number"]}' \
+                                    f' \n About: {row["quote"]}' \
+                                    f' \n Link: {row["full_filename"]}'
+                        num_matches += 1
+                        if num_matches == 10:
+                            break
 
                 response += "\n" \
                             "Not able to find what you are looking for?" \
@@ -169,7 +172,7 @@ class ActionChesedMatch(Action):
 
         except Exception as e:
             response = 'Sorry, and error has occured, please try your request again with different location ' \
-                       'and keyword. If this message persists, please contact ' \
+                       'and keyword. If this message persists, please contact: ' \
                        '+1 (833) 424-3733 on Whatsapp to let us know. '
 
         dispatcher.utter_message(text=response)
