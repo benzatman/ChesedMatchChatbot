@@ -171,7 +171,8 @@ class ActionChesedMatch(Action):
                             "\n  If you ever need this service again, just say 'hi'!"
 
         except Exception as e:
-            response = 'Sorry, and error has occured, please try your request again with different location ' \
+            response = 'Sorry, and error has occurred, please try your request again with different' \
+                       ' location (or fix spelling) ' \
                        'and keyword. If this message persists, please contact: ' \
                        '+1 (833) 424-3733 on Whatsapp to let us know. '
 
