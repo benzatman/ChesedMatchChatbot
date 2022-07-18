@@ -33,7 +33,7 @@ class ActionGetCity(Action):
         country = tracker.latest_message['entities'][0].get('value')
 
         dispatcher.utter_message(text="What city would you like to volunteer in? "
-                                      "\n Government spelling and title of city for best results ")
+                                      "\n Government spelling and title of city for best results. ")
         return [SlotSet("country", country)]
 
 
@@ -53,7 +53,7 @@ class ActionGetCategory(Action):
                                       "\n examples would include 'baby clothes', 'hatzala', 'shul',"
                                       " 'bikor cholim', 'Israel, 'gemach for simcha', 'school'"
                                       " 'baby', 'religious', 'funeral', 'wedding',  etc. "
-                                      "\n please limit response to as few words as possible for best results")
+                                      "\n please limit response to as few words as possible for best results.")
 
         return [SlotSet("city", city)]
 
@@ -67,103 +67,110 @@ class ActionChesedMatch(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
-        country = tracker.get_slot('country')
-        city = tracker.get_slot('city')
-        category = tracker.latest_message['entities'][0].get('value')
+        try:
+            country = tracker.get_slot('country')
+            city = tracker.get_slot('city')
+            category = tracker.latest_message['entities'][0].get('value')
 
-        geolocator = Nominatim(user_agent='info@justonechesed.org')
-        location = geolocator.geocode(city + ' ' + country)
-        lat_start = location.latitude
-        lng_start = location.longitude
+            geolocator = Nominatim(user_agent='info@justonechesed.org')
+            location = geolocator.geocode(city + ' ' + country)
+            lat_start = location.latitude
+            lng_start = location.longitude
 
-        test_sheet_id_main = '1yf9MjXojfE4HIYct-KlB6H11bCsFSOJ0ecnUvWMJK1s'
-        main_sheet_df = pd.read_csv(f"https://docs.google.com/spreadsheets/d/{test_sheet_id_main}/export?format=csv&")
+            test_sheet_id_main = '1yf9MjXojfE4HIYct-KlB6H11bCsFSOJ0ecnUvWMJK1s'
+            main_sheet_df = pd.read_csv(f"https://docs.google.com/spreadsheets/d/{test_sheet_id_main}/export?format=csv&")
 
-        country_df = main_sheet_df[main_sheet_df['country_code'] == country]
+            country_df = main_sheet_df[main_sheet_df['country_code'] == country]
 
-        cols_to_search = ['name', 'quote', 'about_me', 'services', 'search_description', 'custom_member_keywords']
+            cols_to_search = ['name', 'quote', 'about_me', 'services', 'search_description', 'custom_member_keywords']
 
-        item_category_match_index_t1 = []
-        item_category_match_index_t2 = []
-
-        indexer = 0
-        for col in cols_to_search:
-            if col == 'name':
-                for item in country_df[col]:
-                    if fuzz.partial_ratio(category, str(item)) >= 85:
-                        if indexer not in item_category_match_index_t1:
-                            item_category_match_index_t1.append(indexer)
-
-                    indexer += 1
-            else:
-                for item in country_df[col]:
-                    if fuzz.partial_ratio(category, str(item)) >= 85:
-                        if indexer not in item_category_match_index_t2:
-                            item_category_match_index_t2.append(indexer)
-
-                    indexer += 1
+            item_category_match_index_t1 = []
+            item_category_match_index_t2 = []
 
             indexer = 0
+            for col in cols_to_search:
+                if col == 'name':
+                    for item in country_df[col]:
+                        if fuzz.partial_ratio(category, str(item)) >= 85:
+                            if indexer not in item_category_match_index_t1:
+                                item_category_match_index_t1.append(indexer)
 
-        chesed_matches_t1 = []
-        if len(item_category_match_index_t1) == 0:
-            pass
-        else:
-            for item in item_category_match_index_t1:
-                latLng = [country_df.iloc[item]['Lat'], country_df.iloc[item]['Lon']]
-                lat_end = latLng[0]
-                lng_end = latLng[1]
+                        indexer += 1
+                else:
+                    for item in country_df[col]:
+                        if fuzz.partial_ratio(category, str(item)) >= 85:
+                            if indexer not in item_category_match_index_t2:
+                                item_category_match_index_t2.append(indexer)
 
-                dist = latLng_dist(lat_start, lng_start, lat_end, lng_end)
-                if dist <= 30:
-                    chesed_matches_t1.append([item, dist])
+                        indexer += 1
 
-        chesed_matches_t2 = []
-        if len(item_category_match_index_t2) == 0:
-            pass
-        else:
-            for item in item_category_match_index_t2:
-                latLng = [country_df.iloc[item]['Lat'], country_df.iloc[item]['Lon']]
-                lat_end = latLng[0]
-                lng_end = latLng[1]
+                indexer = 0
 
-                dist = latLng_dist(lat_start, lng_start, lat_end, lng_end)
-                if dist <= 30:
-                    chesed_matches_t2.append([item, dist])
+            chesed_matches_t1 = []
+            if len(item_category_match_index_t1) == 0:
+                pass
+            else:
+                for item in item_category_match_index_t1:
+                    latLng = [country_df.iloc[item]['Lat'], country_df.iloc[item]['Lon']]
+                    lat_end = latLng[0]
+                    lng_end = latLng[1]
 
-        if len(chesed_matches_t1) == 0 and len(chesed_matches_t2) == 0:
-            response = f'Sorry I could not find any results for {category} near {location}, please type "start over" ' \
-                       'and try a different keyword, if we got your location wrong, please try another location nearby'
-        else:
-            response = f'I searched for {category} near {location} and this is what I found: '
+                    dist = latLng_dist(lat_start, lng_start, lat_end, lng_end)
+                    if dist <= 30:
+                        chesed_matches_t1.append([item, dist])
 
-        chesed_matches_t1_sorted = sorted(chesed_matches_t1, key=lambda x: x[1])
-        chesed_matches_t2_sorted = sorted(chesed_matches_t2, key=lambda x: x[1])
+            chesed_matches_t2 = []
+            if len(item_category_match_index_t2) == 0:
+                pass
+            else:
+                for item in item_category_match_index_t2:
+                    latLng = [country_df.iloc[item]['Lat'], country_df.iloc[item]['Lon']]
+                    lat_end = latLng[0]
+                    lng_end = latLng[1]
 
-        for match in chesed_matches_t1_sorted:
-            row = country_df.iloc[match[0]]
-            response += f'\n' \
-                        f' \n Name: {row["name"]}' \
-                        f' \n Phone Number: {row["phone_number"]}' \
-                        f' \n About: {row["quote"]}' \
-                        f' \n Link: {row["full_filename"]}'
+                    dist = latLng_dist(lat_start, lng_start, lat_end, lng_end)
+                    if dist <= 30:
+                        chesed_matches_t2.append([item, dist])
 
-        num_matches = len(chesed_matches_t1_sorted)
-        for match in chesed_matches_t2_sorted:
-            row = country_df.iloc[match[0]]
-            response += f'\n' \
-                        f' \n Name: {row["name"]}' \
-                        f' \n Phone Number: {row["phone_number"]}' \
-                        f' \n About: {row["quote"]}' \
-                        f' \n Link: {row["full_filename"]}'
-            num_matches += 1
-            if num_matches == 10:
-                break
+            if len(chesed_matches_t1) == 0 and len(chesed_matches_t2) == 0:
+                response = f'Sorry I could not find any results for {category} near {location},' \
+                           f' please type "start over" and try a different keyword,' \
+                           f' if we got your location wrong, please try another location nearby.'
+            else:
+                response = f'I searched for {category} near {location} and this is what I found: '
 
-        response += "\n" \
-                    "Not able to find what you are looking for?" \
-                    "\n Get in touch directly with one our our case managers: text +1 (833) 424-3733 on Whatsapp." \
-                    "\n  If you ever need this service again, just say 'hi'!"
+                chesed_matches_t1_sorted = sorted(chesed_matches_t1, key=lambda x: x[1])
+                chesed_matches_t2_sorted = sorted(chesed_matches_t2, key=lambda x: x[1])
+
+                for match in chesed_matches_t1_sorted:
+                    row = country_df.iloc[match[0]]
+                    response += f'\n' \
+                                f' \n Name: {row["name"]}' \
+                                f' \n Phone Number: {row["phone_number"]}' \
+                                f' \n About: {row["quote"]}' \
+                                f' \n Link: {row["full_filename"]}'
+
+                num_matches = len(chesed_matches_t1_sorted)
+                for match in chesed_matches_t2_sorted:
+                    row = country_df.iloc[match[0]]
+                    response += f'\n' \
+                                f' \n Name: {row["name"]}' \
+                                f' \n Phone Number: {row["phone_number"]}' \
+                                f' \n About: {row["quote"]}' \
+                                f' \n Link: {row["full_filename"]}'
+                    num_matches += 1
+                    if num_matches == 10:
+                        break
+
+                response += "\n" \
+                            "Not able to find what you are looking for?" \
+                            "\n Get in touch directly with one our our case managers: text +1 (833) 424-3733 on Whatsapp." \
+                            "\n  If you ever need this service again, just say 'hi'!"
+
+        except Exception as e:
+            response = 'Sorry, and error has occured, please try your request again with different location ' \
+                       'and keyword. If this message persists, please contact ' \
+                       '+1 (833) 424-3733 on Whatsapp to let us know. '
 
         dispatcher.utter_message(text=response)
 
