@@ -32,7 +32,7 @@ class ActionGetCity(Action):
 
         country = tracker.latest_message['entities'][0].get('value')
 
-        dispatcher.utter_message(text="What city would you like to volunteer in? "
+        dispatcher.utter_message(text="What city would you like to search? "
                                       "\n Government spelling and title of city for best results. ")
         return [SlotSet("country", country)]
 
