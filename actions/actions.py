@@ -139,6 +139,7 @@ class ActionChesedMatch(Action):
             else:
                 response = f'I searched for {category} near {location} and this is what I found: '
 
+                num_matches = 0
                 if len(chesed_matches_t1) != 0:
                     chesed_matches_t1_sorted = sorted(chesed_matches_t1, key=lambda x: x[1])
 
@@ -150,22 +151,28 @@ class ActionChesedMatch(Action):
                                     f' \n About: {row["quote"]}' \
                                     f' \n Link: {row["full_filename"]}'
 
-                if len(chesed_matches_t2) != 0:
-                    chesed_matches_t2_sorted = sorted(chesed_matches_t2, key=lambda x: x[1])
-
-                    num_matches = len(chesed_matches_t1)
-                    for match in chesed_matches_t2_sorted:
-                        row = country_df.iloc[match[0]]
-                        response += f'\n' \
-                                    f' \n Name: {row["name"]}' \
-                                    f' \n Phone Number: {row["phone_number"]}' \
-                                    f' \n About: {row["quote"]}' \
-                                    f' \n Link: {row["full_filename"]}'
                         num_matches += 1
                         if num_matches == 10:
                             break
 
-                response += "\n" \
+                if len(chesed_matches_t2) != 0:
+                    chesed_matches_t2_sorted = sorted(chesed_matches_t2, key=lambda x: x[1])
+
+                    if num_matches == 10:
+                        pass
+                    else:
+                        for match in chesed_matches_t2_sorted:
+                            row = country_df.iloc[match[0]]
+                            response += f'\n \n' \
+                                        f' \n Name: {row["name"]}' \
+                                        f' \n Phone Number: {row["phone_number"]}' \
+                                        f' \n About: {row["quote"]}' \
+                                        f' \n Link: {row["full_filename"]}'
+                            num_matches += 1
+                            if num_matches == 10:
+                                break
+
+                response += "\n \n" \
                             "Not able to find what you are looking for?" \
                             "\n Get in touch directly with one our our case managers: text +1 (833) 424-3733 on Whatsapp." \
                             "\n  If you ever need this service again, just say 'hi'!"
