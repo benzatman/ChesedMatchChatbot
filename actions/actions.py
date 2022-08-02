@@ -146,7 +146,7 @@ class ActionChesedMatch(Action):
                     for match in chesed_matches_t1_sorted:
                         row = country_df.iloc[match[0]]
                         response += f'\n \n' \
-                                    f' \n \033[1m Name: {row["name"]} \033[0m' \
+                                    f' \n * Name: {row["name"]} *' \
                                     f' \n Phone Number: {row["phone_number"]}' \
                                     f' \n About: {row["quote"]}' \
                                     f' \n Link: {row["full_filename"]}'
@@ -164,7 +164,7 @@ class ActionChesedMatch(Action):
                         for match in chesed_matches_t2_sorted:
                             row = country_df.iloc[match[0]]
                             response += f'\n \n' \
-                                        f' \n \033[1m Name: {row["name"]} \033[0m' \
+                                        f' \n * Name: {row["name"]} *' \
                                         f' \n Phone Number: {row["phone_number"]}' \
                                         f' \n About: {row["quote"]}' \
                                         f' \n Link: {row["full_filename"]}'
