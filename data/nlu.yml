@@ -15,6 +15,7 @@ nlu:
     - goodmorning
     - goodevening
     - good afternoon
+    - Hi
 - intent: inform_city
   examples: |
     - [Jerusalem](city)
@@ -575,6 +576,12 @@ nlu:
     - [geula](city)
     - [dupont circle](city)
     - [Teaneck](city)
+    - [miami](city)
+    - [Chicago](city)
+    - [Woodmere](city)
+    - [bet shemesh](city)
+    - [Bet shemesh](city)
+    - [Brooklynn](city)
 - intent: inform_category
   examples: |
     - [gemach](category)
@@ -998,6 +1005,9 @@ nlu:
     - [covid-19](category)
     - [kittel](category)
     - [siddurim](category)
+    - [baby](category)
+    - [Baby](category)
+    - [wedding gemach](category)
 - intent: start_over
   examples: |
     - start over
