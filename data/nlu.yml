@@ -1008,6 +1008,8 @@ nlu:
     - [baby](category)
     - [Baby](category)
     - [wedding gemach](category)
+    - [food drive](category)
+    - [shul](category)
 - intent: start_over
   examples: |
     - start over
