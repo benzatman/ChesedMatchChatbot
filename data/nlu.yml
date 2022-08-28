@@ -16,7 +16,7 @@ nlu:
     - goodevening
     - good afternoon
     - Hi
-- intent: inform_city
+- intent: inform_country
   examples: |
     - [US](country)
     - [IL](country)

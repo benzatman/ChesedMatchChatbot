@@ -29,7 +29,7 @@ stories:
   - action: action_get_city
   - intent: inform_city
     entities:
-      - city: Manhattan
+      - city: Teaneck
   - action: action_get_category
   - intent: inform_category
     entities:
