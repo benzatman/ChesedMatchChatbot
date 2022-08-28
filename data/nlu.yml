@@ -16,6 +16,7 @@ nlu:
     - goodevening
     - good afternoon
     - Hi
+    - [Yo](city)
 - intent: inform_country
   examples: |
     - [US](country)
@@ -600,6 +601,7 @@ nlu:
     - [bet shemesh](city)
     - [Bet shemesh](city)
     - [Brooklynn](city)
+    - [Beit Shemesh](city)
 - intent: inform_category
   examples: |
     - [gemach](category)
