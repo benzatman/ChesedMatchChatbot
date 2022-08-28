@@ -152,13 +152,13 @@ class ActionChesedMatch(Action):
                                     f' \n Link: {row["full_filename"]}'
 
                         num_matches += 1
-                        if num_matches == 5:
+                        if num_matches == 4:
                             break
 
                 if len(chesed_matches_t2) != 0:
                     chesed_matches_t2_sorted = sorted(chesed_matches_t2, key=lambda x: x[1])
 
-                    if num_matches == 5:
+                    if num_matches == 4:
                         pass
                     else:
                         for match in chesed_matches_t2_sorted:
@@ -169,7 +169,7 @@ class ActionChesedMatch(Action):
                                         f' \n About: {row["quote"]}' \
                                         f' \n Link: {row["full_filename"]}'
                             num_matches += 1
-                            if num_matches == 5:
+                            if num_matches == 4:
                                 break
 
                 response += "\n \n" \
