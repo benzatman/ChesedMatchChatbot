@@ -6,7 +6,6 @@ stories:
   steps:
   - intent: greet
   - action: utter_intro
-  - action: utter_ask_country
   - intent: inform_country
     entities:
       - country: IL
@@ -24,7 +23,6 @@ stories:
   steps:
   - intent: start_over
   - action: utter_intro
-  - action: utter_ask_country
   - intent: inform_country
     entities:
       - country: US

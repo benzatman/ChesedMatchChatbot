@@ -30,7 +30,10 @@ slots:
 
 responses:
   utter_intro:
-  - text: "Hey! Welcome to the Just One Chesed ChesedMatch ChatBot, Please answer a few questions so we can help you the best we can. You can write 'start over' at any point to go back to the main menu"
+  - text: "Hey! Welcome to the Just One Chesed ChesedMatch ChatBot, Please answer a few questions so we can help you the best we can. You can write 'start over' at any point to go back to the main menu.
+  To start: tell us what country you are from: for USA type: 'US', for Israel type: 'IL', for Canada type: 'CA', for Great Britain type: 'GB', for Australia type: 'AU',
+  for Belgium type: 'BE', for France type: 'FR', for Denmark type: 'DK', for Japan type: 'JP', for South Korea type: 'KR', for Mexico type: 'MX', for Russia type: 'RU',
+  for Ukraine type: 'UA', for South Africa type 'ZA', for Switzerland type: 'CH', for UAE type 'AE'."
 
   utter_ask_country:
   - text: "Please select your country from below"

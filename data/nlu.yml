@@ -18,6 +18,24 @@ nlu:
     - Hi
 - intent: inform_city
   examples: |
+    - [US](country)
+    - [IL](country)
+    - [CA](country)
+    - [GB](country)
+    - [AU](country)
+    - [BE](country)
+    - [FR](country)
+    - [DK](country)
+    - [JP](country)
+    - [KR](country)
+    - [MX](country)
+    - [RU](country)
+    - [UA](country)
+    - [ZA](country)
+    - [CH](country)
+    - [AE](country)
+- intent: inform_city
+  examples: |
     - [Jerusalem](city)
     - [Tel Aviv](city)
     - [Thornhill](city)
