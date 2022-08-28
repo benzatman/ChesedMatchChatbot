@@ -32,7 +32,7 @@ class ActionGetCity(Action):
 
         country = tracker.latest_message['entities'][0].get('value')
 
-        dispatcher.utter_message(text="What city would you like to search? "
+        dispatcher.utter_message(text="What city would you like to search?"
                                       "\n Government spelling and title of city for best results. ")
         return [SlotSet("country", country)]
 
@@ -49,8 +49,8 @@ class ActionGetCategory(Action):
         city = tracker.latest_message['entities'][0].get('value')
 
         dispatcher.utter_message(text="Please type the organization/category/keyword" 
-                                      " of the service you are looking for. "
-                                      "\n examples would include 'baby clothes', 'hatzala', 'shul',"
+                                      " of the service you are looking for."
+                                      "\n Examples would include 'baby clothes', 'hatzala', 'shul',"
                                       " 'bikor cholim', 'Israel, 'gemach for simcha', 'school'"
                                       " 'baby', 'religious', 'funeral', 'wedding',  etc. "
                                       "\n please limit response to as few words as possible for best results.")
@@ -178,7 +178,7 @@ class ActionChesedMatch(Action):
                             "\n  If you ever need this service again, just say 'hi'!"
 
         except Exception as e:
-            response = 'Sorry, and error has occurred, please try your request again with different' \
+            response = 'Sorry, an error has occurred, please try your request again with different' \
                        ' location (or fix spelling) ' \
                        'and keyword. If this message persists, please contact: ' \
                        '+1 (833) 424-3733 on Whatsapp to let us know. '
