@@ -589,6 +589,9 @@ nlu:
     - [Bet shemesh](city)
     - [Brooklynn](city)
     - [Beit Shemesh](city)
+    - [New York](city)
+    - [Beit shemesh](city)
+    - [New  York](city)
 - intent: inform_category
   examples: |
     - [gemach](category)
@@ -1017,9 +1020,15 @@ nlu:
     - [wedding gemach](category)
     - [food drive](category)
     - [shul](category)
+    - [Baby food](category)
+    - [Simcha](category)
+    - [Wedding](category)
+    - [Mental health](category)
+    - [Hatzala](category)
 - intent: start_over
   examples: |
     - start over
     - please can i start over
     - start over please
     - may i start over
+    - Start over
