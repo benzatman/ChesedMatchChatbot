@@ -1,4 +1,3 @@
-import os
 from typing import Any, Text, Dict, List
 from rasa_sdk import Action, Tracker
 from rasa_sdk.events import SlotSet, AllSlotsReset
@@ -39,7 +38,7 @@ def bitly_url(url):
         'Content-Type': 'application/json',
     }
 
-    data = f'{ "long_url": {url}, "domain": "jonec.co", "group_guid": "Bm81gujiye5" }'
+    data = '{ "long_url": {}, "domain": "jonec.co", "group_guid": "Bm81gujiye5" }'.format(url)
 
     response = requests.post('https://api-ssl.bitly.com/v4/shorten', headers=headers, data=data)
     return response.json().get('link')
