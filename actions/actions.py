@@ -18,7 +18,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import pickle
 import os
 import json
-from selenium.webdriver.chrome.options import Options
+
 
 
 def latLng_dist(lat_start, lng_start, lat_end, lng_end):
@@ -235,9 +235,7 @@ class ActionChesedMatch(Action):
 
                 response += '\nHope these help!\n'
                 if num_results > showing:
-                    options = Options()
-                    options.headless = True
-                    driver = webdriver.Chrome(options=options)
+                    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
                     driver.get('https://www.chesedmatch.org/search_results?')
                     elem1 = driver.find_element(By.NAME, "location_value")
                     elem2 = driver.find_element(By.NAME, "q")
