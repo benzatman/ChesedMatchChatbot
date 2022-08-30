@@ -47,18 +47,9 @@ class ActionGetCity(Action):
 
         country = tracker.latest_message['entities'][0].get('value')
 
-        if country == 'USA':
-            country_slot = 'US'
-        elif country == 'Israel':
-            country_slot = 'IL'
-        elif country == 'Canada':
-            country_slot = 'CA'
-        else:
-            country_slot = 'US'
-
         dispatcher.utter_message(text="Which city are you searching for? "
                                       "\nPlease use the official spelling and title of city for best results")
-        return [SlotSet("country", country_slot)]
+        return [SlotSet("country", country)]
 
 
 class ActionGetCategory(Action):
@@ -89,6 +80,13 @@ class ActionChesedMatch(Action):
 
         try:
             country = tracker.get_slot('country')
+            if country == 'USA':
+                country = 'US'
+            elif country == 'Israel':
+                country = 'IL'
+            elif country == 'Canada':
+                country = 'CA'
+
             city = tracker.get_slot('city')
             category = tracker.latest_message['entities'][0].get('value')
 
