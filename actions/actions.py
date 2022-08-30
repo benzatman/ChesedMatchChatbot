@@ -7,7 +7,7 @@ from fuzzywuzzy import fuzz
 import math
 from geopy.geocoders import Nominatim
 import re
-import bitly_api
+import requests
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -31,9 +31,16 @@ def latLng_dist(lat_start, lng_start, lat_end, lng_end):
     return dist
 
 def bitly_url(url):
-    bitly_access_token = config('bitly_access_token')
-    x = bitly_api.Connection(access_token=bitly_access_token)
-    return x.shorten(url)
+    token = config('bitly_access_token')
+    headers = {
+        'Authorization': f'Bearer {token}',
+        'Content-Type': 'application/json',
+    }
+
+    data = f'{ "long_url": {url}, "domain": "jonec.co", "group_guid": "Bm81gujiye5" }'
+
+    response = requests.post('https://api-ssl.bitly.com/v4/shorten', headers=headers, data=data)
+    return response.json().get('link')
 
 
 class ActionGetCity(Action):
@@ -192,7 +199,7 @@ class ActionChesedMatch(Action):
                                     f'\n *Name: {row["name"]} *' \
                                     f'\n Phone Number: {row["phone_number"]}' \
                                     f'\n About: {row["quote"]}' \
-                                    f'\n Link: {bitlyed_url.get("url")}'
+                                    f'\n Link: {bitlyed_url}'
 
                         num_matches += 1
                         if num_matches == 5:
@@ -217,7 +224,7 @@ class ActionChesedMatch(Action):
                                         f'\n*Name: {row["name"]} *' \
                                         f'\nPhone Number: {row["phone_number"]}' \
                                         f'\nAbout: {row["quote"]}' \
-                                        f'\nLink: {bitlyed_url.get("url")}'
+                                        f'\nLink: {bitlyed_url}'
                             num_matches += 1
                             if num_matches == 5:
                                 break
@@ -239,7 +246,7 @@ class ActionChesedMatch(Action):
                     url = driver.current_url
                     driver.close()
 
-                    b_url = bitly_url(url).get('url')
+                    b_url = bitly_url(url)
 
                     response += f"\n" \
                                 f"Want more results? Go to this link: {b_url}"
