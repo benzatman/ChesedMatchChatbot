@@ -1,3 +1,4 @@
+import os
 from typing import Any, Text, Dict, List
 from rasa_sdk import Action, Tracker
 from rasa_sdk.events import SlotSet, AllSlotsReset
@@ -16,7 +17,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import pickle
-from decouple import config
+import os
 
 
 def latLng_dist(lat_start, lng_start, lat_end, lng_end):
@@ -30,8 +31,9 @@ def latLng_dist(lat_start, lng_start, lat_end, lng_end):
     )
     return dist
 
+
 def bitly_url(url):
-    token = config('bitly_access_token')
+    token = os.getenv('bitly_access_token')
     headers = {
         'Authorization': f'Bearer {token}',
         'Content-Type': 'application/json',
