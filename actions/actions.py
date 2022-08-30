@@ -17,6 +17,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import pickle
 import os
+import json
 
 
 def latLng_dist(lat_start, lng_start, lat_end, lng_end):
@@ -38,7 +39,8 @@ def bitly_url(url):
         'Content-Type': 'application/json',
     }
 
-    data = '{ "long_url": {}, "domain": "jonec.co", "group_guid": "Bm81gujiye5" }'.format(url)
+    data = {"long_url": url, "domain": "jonec.co", "group_guid": "Bm81gujiye5"}
+    data = json.dumps(data)
 
     response = requests.post('https://api-ssl.bitly.com/v4/shorten', headers=headers, data=data)
     return response.json().get('link')
