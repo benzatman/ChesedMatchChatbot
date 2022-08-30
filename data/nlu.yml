@@ -19,22 +19,9 @@ nlu:
     - [Yo](city)
 - intent: inform_country
   examples: |
-    - [US](country)
-    - [IL](country)
-    - [CA](country)
-    - [GB](country)
-    - [AU](country)
-    - [BE](country)
-    - [FR](country)
-    - [DK](country)
-    - [JP](country)
-    - [KR](country)
-    - [MX](country)
-    - [RU](country)
-    - [UA](country)
-    - [ZA](country)
-    - [CH](country)
-    - [AE](country)
+    - [USA](country)
+    - [Israel](country)
+    - [Canada](country)
 - intent: inform_city
   examples: |
     - [Jerusalem](city)

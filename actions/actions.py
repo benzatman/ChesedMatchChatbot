@@ -1,12 +1,22 @@
-from typing import Any, Text, Dict, List, Union, Optional
+from typing import Any, Text, Dict, List
 from rasa_sdk import Action, Tracker
-from rasa_sdk.events import SlotSet, AllSlotsReset, FollowupAction
-from rasa_sdk.types import DomainDict
+from rasa_sdk.events import SlotSet, AllSlotsReset
 from rasa_sdk.executor import CollectingDispatcher
 import pandas as pd
 from fuzzywuzzy import fuzz
 import math
 from geopy.geocoders import Nominatim
+import re
+import bitly_api
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import pickle
+from decouple import config
 
 
 def latLng_dist(lat_start, lng_start, lat_end, lng_end):
@@ -20,6 +30,11 @@ def latLng_dist(lat_start, lng_start, lat_end, lng_end):
     )
     return dist
 
+def bitly_url(url):
+    bitly_access_token = config('bitly_access_token')
+    x = bitly_api.Connection(access_token=bitly_access_token)
+    return x.shorten(url)
+
 
 class ActionGetCity(Action):
 
@@ -32,9 +47,18 @@ class ActionGetCity(Action):
 
         country = tracker.latest_message['entities'][0].get('value')
 
-        dispatcher.utter_message(text="What city would you like to search?"
-                                      "\n Government spelling and title of city for best results. ")
-        return [SlotSet("country", country)]
+        if country == 'USA':
+            country_slot = 'US'
+        elif country == 'Israel':
+            country_slot = 'IL'
+        elif country == 'Canada':
+            country_slot = 'CA'
+        else:
+            country_slot = 'US'
+
+        dispatcher.utter_message(text="Which city are you searching for? "
+                                      "\nPlease use the official spelling and title of city for best results")
+        return [SlotSet("country", country_slot)]
 
 
 class ActionGetCategory(Action):
@@ -49,11 +73,7 @@ class ActionGetCategory(Action):
         city = tracker.latest_message['entities'][0].get('value')
 
         dispatcher.utter_message(text="Please type the organization/category/keyword" 
-                                      " of the service you are looking for."
-                                      "\n Examples would include 'baby clothes', 'hatzala', 'shul',"
-                                      " 'bikor cholim', 'Israel, 'gemach for simcha', 'school'"
-                                      " 'baby', 'religious', 'funeral', 'wedding',  etc. "
-                                      "\n please limit response to as few words as possible for best results.")
+                                      " of the service you are looking for.")
 
         return [SlotSet("city", city)]
 
@@ -84,6 +104,18 @@ class ActionChesedMatch(Action):
 
             cols_to_search = ['name', 'quote', 'about_me', 'services', 'search_description', 'custom_member_keywords']
 
+            try:
+                with open('serialized.pkl', 'rb') as f:
+                    bitly_df = pickle.load(f)
+
+            except Exception:
+                bitly_df = pd.DataFrame(main_sheet_df['company'], columns=['company', 'bitly_url'])
+
+            if len(bitly_df) != len(main_sheet_df):
+                update_df = pd.DataFrame(main_sheet_df['company'])
+                bitly_df.update(update_df)
+
+            bitly_indexer = pd.Index(bitly_df['company'])
             item_category_match_index_t1 = []
             item_category_match_index_t2 = []
 
@@ -105,6 +137,8 @@ class ActionChesedMatch(Action):
                         indexer += 1
 
                 indexer = 0
+
+            num_results = len(item_category_match_index_t1) + len(item_category_match_index_t2)
 
             chesed_matches_t1 = []
             if len(item_category_match_index_t1) == 0:
@@ -138,6 +172,10 @@ class ActionChesedMatch(Action):
                            f' if we got your location wrong, please try another location nearby.'
             else:
                 response = f'I searched for {category} near {location} and this is what I found: '
+                showing = 7
+                if num_results < 7:
+                    showing = num_results
+                response += f'Showing {showing} results out of {num_results} matches'
 
                 num_matches = 0
                 if len(chesed_matches_t1) != 0:
@@ -145,43 +183,89 @@ class ActionChesedMatch(Action):
 
                     for match in chesed_matches_t1_sorted:
                         row = country_df.iloc[match[0]]
+                        bitly_loc = bitly_indexer.get_loc(row['company'])
+                        if pd.isnull(bitly_df['bitly_url'].loc[bitly_loc]):
+                            bitlyed_url = bitly_url(row["full_filename"])
+                            bitly_df['bitly_url'].loc[bitly_loc] = bitlyed_url
+                        else:
+                            bitlyed_url = bitly_df['bitly_url'].loc[bitly_loc]
+
                         response += f'\n \n' \
-                                    f' \n * Name: {row["name"]} *' \
-                                    f' \n Phone Number: {row["phone_number"]}' \
-                                    f' \n About: {row["quote"]}' \
-                                    f' \n Link: {row["full_filename"]}'
+                                    f'\n *Name: {row["name"]} *' \
+                                    f'\n Phone Number: {row["phone_number"]}' \
+                                    f'\n About: {row["quote"]}' \
+                                    f'\n Link: {bitlyed_url.get("url")}'
 
                         num_matches += 1
-                        if num_matches == 4:
+                        if num_matches == 5:
                             break
 
                 if len(chesed_matches_t2) != 0:
                     chesed_matches_t2_sorted = sorted(chesed_matches_t2, key=lambda x: x[1])
 
-                    if num_matches == 4:
+                    if num_matches == 5:
                         pass
                     else:
                         for match in chesed_matches_t2_sorted:
                             row = country_df.iloc[match[0]]
+                            bitly_loc = bitly_indexer.get_loc(row['company'])
+                            if pd.isnull(bitly_df['bitly_url'].loc[bitly_loc]):
+                                bitlyed_url = bitly_url(row["full_filename"])
+                                bitly_df['bitly_url'].loc[bitly_loc] = bitlyed_url
+                            else:
+                                bitlyed_url = bitly_df['bitly_url'].loc[bitly_loc]
+
                             response += f'\n \n' \
-                                        f' \n * Name: {row["name"]} *' \
-                                        f' \n Phone Number: {row["phone_number"]}' \
-                                        f' \n About: {row["quote"]}' \
-                                        f' \n Link: {row["full_filename"]}'
+                                        f'\n*Name: {row["name"]} *' \
+                                        f'\nPhone Number: {row["phone_number"]}' \
+                                        f'\nAbout: {row["quote"]}' \
+                                        f'\nLink: {bitlyed_url.get("url")}'
                             num_matches += 1
-                            if num_matches == 4:
+                            if num_matches == 5:
                                 break
+
+                response += '\nHope these help!\n'
+                if num_results > showing:
+                    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+                    driver.get('https://www.chesedmatch.org/search_results?')
+                    elem1 = driver.find_element(By.NAME, "location_value")
+                    elem2 = driver.find_element(By.NAME, "q")
+                    elem1.click()
+                    elem1.clear()
+                    elem1.send_keys(city)
+                    elem2.click()
+                    elem2.clear()
+                    elem2.send_keys(category)
+                    elem2.send_keys(Keys.RETURN)
+                    WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.ID, "location_google_maps_homepage"))).click()
+                    url = driver.current_url
+                    driver.close()
+
+                    b_url = bitly_url(url).get('url')
+
+                    response += f"\n" \
+                                f"Want more results? Go to this link: {b_url}"
 
                 response += "\n \n" \
                             "Not able to find what you are looking for?" \
-                            "\n Get in touch directly with one our our case managers: text +1 (833) 424-3733 on Whatsapp." \
-                            "\n  If you ever need this service again, just say 'hi'!"
+                            "\nGet in touch directly with one our our case managers: text +1 (833) 424-3733 on Whatsapp." \
+                            "\nIf you ever need this service again, just say 'hi'!"
+
+            with open('bitly_df.pkl', 'wb') as f:
+                pickle.dump(bitly_df, f)
+
+            while len(response) > 1600:
+                name_locs = [m.start() for m in re.finditer('Name', response)]
+                end_loc = response.find('Hope these help!')
+                resp_p1 = response[:name_locs[-1]]
+                resp_p2 = response[end_loc:]
+                response = resp_p1 + resp_p2
 
         except Exception as e:
-            response = 'Sorry, an error has occurred, please try your request again with different' \
-                       ' location (or fix spelling) ' \
-                       'and keyword. If this message persists, please contact: ' \
-                       '+1 (833) 424-3733 on Whatsapp to let us know. '
+            response = f'Sorry, an error has occurred, please try your request again with different' \
+                       f' location (or fix spelling) ' \
+                       f'and keyword. If this message persists, please contact: ' \
+                       f'+1 (833) 424-3733 on Whatsapp to let us know and tell us your facing error: {e}. '
 
         dispatcher.utter_message(text=response)
 
