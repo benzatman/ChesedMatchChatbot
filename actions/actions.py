@@ -19,6 +19,8 @@ from selenium.webdriver.support import expected_conditions as EC
 import pickle
 import os
 import json
+from selenium.webdriver.firefox.service import Service as FirefoxService
+from webdriver_manager.firefox import GeckoDriverManager
 
 
 
@@ -246,7 +248,8 @@ class ActionChesedMatch(Action):
                     options.add_argument("--disable-infobars")
                     options.add_argument("--disable-dev-shm-usage")
                     options.add_argument('--window-size=1920,1080')
-                    driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+                    #driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+                    driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))
                     driver.get('https://www.chesedmatch.org/search_results?')
                     elem1 = driver.find_element(By.NAME, "location_value")
                     elem2 = driver.find_element(By.NAME, "q")
