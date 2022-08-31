@@ -8,7 +8,7 @@ import math
 from geopy.geocoders import Nominatim
 import re
 import requests
-# from selenium import webdriver
+from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
@@ -20,7 +20,7 @@ import os
 import json
 import shutil
 import tempfile
-import undetected_chromedriver as webdriver
+import undetected_chromedriver as uc
 
 
 def latLng_dist(lat_start, lng_start, lat_end, lng_end):
@@ -109,7 +109,8 @@ class ActionChesedMatch(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
-        try:
+        #try:
+        if True:
             country = tracker.get_slot('country')
             if country == 'USA':
                 country = 'US'
@@ -134,10 +135,10 @@ class ActionChesedMatch(Action):
             cols_to_search = ['name', 'quote', 'about_me', 'services', 'search_description', 'custom_member_keywords']
 
             try:
-                with open('serialized.pkl', 'rb') as f:
+                with open('bitly_df.pkl', 'rb') as f:
                     bitly_df = pickle.load(f)
 
-            except Exception:
+            except Exception as e:
                 bitly_df = pd.DataFrame(main_sheet_df['company'], columns=['company', 'bitly_url'])
 
             if len(bitly_df) != len(main_sheet_df):
@@ -255,11 +256,12 @@ class ActionChesedMatch(Action):
 
                 response += '\nHope these help!\n'
                 if num_results > showing:
-                    patcher = webdriver.Patcher()
+                    patcher = uc.Patcher()
                     patcher.auto()
                     tmp_directory = os.path.normpath(tempfile.mkdtemp())
                     executable_path = force_patcher_to_use(tmp_directory)
-                    driver = webdriver.Chrome(executable_path=executable_path, service=Service(ChromeDriverManager().install()))
+                    options = webdriver.ChromeOptions()
+                    driver = webdriver.Chrome(executable_path=executable_path, service=Service(ChromeDriverManager().install()), options=options)
                     driver.get('https://www.chesedmatch.org/search_results?')
                     elem1 = driver.find_element(By.NAME, "location_value")
                     elem2 = driver.find_element(By.NAME, "q")
@@ -294,7 +296,8 @@ class ActionChesedMatch(Action):
                 resp_p2 = response[end_loc:]
                 response = resp_p1 + resp_p2
 
-        except Exception as e:
+        #except Exception as e:
+        else:
             response = f'Sorry, an error has occurred, please try your request again with different' \
                        f' location (or fix spelling) ' \
                        f'and keyword. If this message persists, please contact: ' \
