@@ -91,8 +91,7 @@ class ActionChesedMatch(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
-        #try:
-        if True:
+        try:
             country = tracker.get_slot('country')
             if country == 'USA':
                 country = 'US'
@@ -236,7 +235,8 @@ class ActionChesedMatch(Action):
                             if num_matches == 5:
                                 break
 
-                response += '\nHope these help!\n'
+                response += '\n\nHope these help!\n'
+
                 if num_results > showing:
                     options = Options()
                     options.add_argument("--headless")
@@ -280,8 +280,7 @@ class ActionChesedMatch(Action):
                 resp_p2 = response[end_loc:]
                 response = resp_p1 + resp_p2
 
-        #except Exception as e:
-        else:
+        except Exception as e:
             response = f'Sorry, an error has occurred, please try your request again with different' \
                        f' location (or fix spelling) ' \
                        f'and keyword. If this message persists, please contact: ' \
