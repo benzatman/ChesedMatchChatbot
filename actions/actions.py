@@ -13,6 +13,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import pickle
@@ -237,7 +238,14 @@ class ActionChesedMatch(Action):
 
                 response += '\nHope these help!\n'
                 if num_results > showing:
-                    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+                    options = Options()
+                    options.add_argument("--headless")
+                    options.add_argument("--disable-gpu")
+                    options.add_argument("--no-sandbox")
+                    options.add_argument("enable-automation")
+                    options.add_argument("--disable-infobars")
+                    options.add_argument("--disable-dev-shm-usage")
+                    driver = webdriver.Chrome(options=options)
                     driver.get('https://www.chesedmatch.org/search_results?')
                     elem1 = driver.find_element(By.NAME, "location_value")
                     elem2 = driver.find_element(By.NAME, "q")
