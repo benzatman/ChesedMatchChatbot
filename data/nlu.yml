@@ -1025,6 +1025,7 @@ nlu:
     - [Wedding](category)
     - [Mental health](category)
     - [Hatzala](category)
+    - [wedding](category)
 - intent: start_over
   examples: |
     - start over
