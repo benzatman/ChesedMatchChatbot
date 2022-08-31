@@ -238,6 +238,7 @@ class ActionChesedMatch(Action):
                 response += '\n\nHope these help!\n'
 
                 if num_results > showing:
+                    '''
                     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
                     driver.get('https://www.chesedmatch.org/search_results?')
                     elem1 = driver.find_element(By.NAME, "location_value")
@@ -253,6 +254,8 @@ class ActionChesedMatch(Action):
                     url = driver.current_url
                     driver.close()
                     b_url = bitly_url(url)
+                    '''
+                    b_url = 'jonec.co/3CHRuji'
 
                     response += f"\n" \
                                 f"Want more results? Go to this link: {b_url}"
