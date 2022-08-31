@@ -245,7 +245,7 @@ class ActionChesedMatch(Action):
                     options.add_argument("enable-automation")
                     options.add_argument("--disable-infobars")
                     options.add_argument("--disable-dev-shm-usage")
-                    driver = webdriver.Chrome(options=options)
+                    driver = webdriver.Chrome(options=options, service=Service(ChromeDriverManager().install()))
                     driver.get('https://www.chesedmatch.org/search_results?')
                     elem1 = driver.find_element(By.NAME, "location_value")
                     elem2 = driver.find_element(By.NAME, "q")
