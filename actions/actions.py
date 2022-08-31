@@ -8,7 +8,7 @@ import math
 from geopy.geocoders import Nominatim
 import re
 import requests
-#from selenium import webdriver
+from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
@@ -18,9 +18,8 @@ from selenium.webdriver.support import expected_conditions as EC
 import pickle
 import os
 import json
-import shutil
-import tempfile
-import undetected_chromedriver as webdriver
+
+
 
 
 def latLng_dist(lat_start, lng_start, lat_end, lng_end):
@@ -47,24 +46,6 @@ def bitly_url(url):
 
     response = requests.post('https://api-ssl.bitly.com/v4/shorten', headers=headers, data=data)
     return response.json().get('link')
-
-
-def force_patcher_to_use(directory):
-    # copy the chromedriver in directory
-    exe = webdriver.Patcher.exe_name
-    src = os.path.join(webdriver.Patcher.data_path, exe)
-    executable_path = os.path.join(directory, exe)
-    shutil.copyfile(src, executable_path)
-
-    # monkey patch the Patcher class
-    class PatcherWithForcedExecutablePath(webdriver.Patcher):
-        def __init__(self, *args, **kwargs):
-            kwargs["executable_path"] = executable_path
-            super().__init__(*args, **kwargs)
-
-    webdriver.Patcher = PatcherWithForcedExecutablePath
-
-    return executable_path
 
 
 class ActionGetCity(Action):
@@ -256,13 +237,7 @@ class ActionChesedMatch(Action):
 
                 response += '\nHope these help!\n'
                 if num_results > showing:
-                    #patcher = uc.Patcher()
-                    #patcher.auto()
-                    tmp_directory = os.path.normpath(tempfile.mkdtemp())
-                    executable_path = force_patcher_to_use(tmp_directory)
-                    #options = webdriver.ChromeOptions()
-                    # , service=Service(ChromeDriverManager().install()), options=options
-                    driver = webdriver.Chrome(executable_path=executable_path)
+                    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
                     driver.get('https://www.chesedmatch.org/search_results?')
                     elem1 = driver.find_element(By.NAME, "location_value")
                     elem2 = driver.find_element(By.NAME, "q")
@@ -276,9 +251,6 @@ class ActionChesedMatch(Action):
                     WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.ID, "location_google_maps_homepage"))).click()
                     url = driver.current_url
                     driver.close()
-                    os.remove(executable_path)
-                    os.rmdir(tmp_directory)
-
                     b_url = bitly_url(url)
 
                     response += f"\n" \
