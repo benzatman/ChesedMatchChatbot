@@ -17,6 +17,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import os
 import json
+from dotenv import load_dotenv
 
 
 def latLng_dist(lat_start, lng_start, lat_end, lng_end):
@@ -32,6 +33,7 @@ def latLng_dist(lat_start, lng_start, lat_end, lng_end):
 
 
 def bitly_url(url):
+    load_dotenv()
     token = os.getenv('bitly_access_token')
     headers = {
         'Authorization': f'Bearer {token}',
