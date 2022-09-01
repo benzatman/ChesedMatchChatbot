@@ -15,12 +15,8 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import pickle
 import os
 import json
-
-
-
 
 
 def latLng_dist(lat_start, lng_start, lat_end, lng_end):
@@ -42,7 +38,7 @@ def bitly_url(url):
         'Content-Type': 'application/json',
     }
 
-    data = {"long_url": url, "domain": "jonec.co", "group_guid": "Bm81gujiye5"}
+    data = { "long_url": url, "domain": "jonec.co", "group_guid": "Bm81gujiye5" }
     data = json.dumps(data)
 
     response = requests.post('https://api-ssl.bitly.com/v4/shorten', headers=headers, data=data)
@@ -115,18 +111,6 @@ class ActionChesedMatch(Action):
 
             cols_to_search = ['name', 'quote', 'about_me', 'services', 'search_description', 'custom_member_keywords']
 
-            try:
-                with open('bitly_df.pkl', 'rb') as f:
-                    bitly_df = pickle.load(f)
-
-            except Exception as e:
-                bitly_df = pd.DataFrame(main_sheet_df['company'], columns=['company', 'bitly_url'])
-
-            if len(bitly_df) != len(main_sheet_df):
-                update_df = pd.DataFrame(main_sheet_df['company'])
-                bitly_df.update(update_df)
-
-            bitly_indexer = pd.Index(bitly_df['company'])
             item_category_match_index_t1 = []
             item_category_match_index_t2 = []
 
@@ -194,18 +178,12 @@ class ActionChesedMatch(Action):
 
                     for match in chesed_matches_t1_sorted:
                         row = country_df.iloc[match[0]]
-                        bitly_loc = bitly_indexer.get_loc(row['company'])
-                        if pd.isnull(bitly_df['bitly_url'].loc[bitly_loc]):
-                            bitlyed_url = bitly_url(row["full_filename"])
-                            bitly_df['bitly_url'].loc[bitly_loc] = bitlyed_url
-                        else:
-                            bitlyed_url = bitly_df['bitly_url'].loc[bitly_loc]
 
                         response += f'\n \n' \
                                     f'\n *Name: {row["name"]} *' \
                                     f'\n Phone Number: {row["phone_number"]}' \
                                     f'\n About: {row["quote"]}' \
-                                    f'\n Link: {bitlyed_url}'
+                                    f'\n Link: {bitly_url(row["full_filename"])}'
 
                         num_matches += 1
                         if num_matches == 5:
@@ -219,18 +197,12 @@ class ActionChesedMatch(Action):
                     else:
                         for match in chesed_matches_t2_sorted:
                             row = country_df.iloc[match[0]]
-                            bitly_loc = bitly_indexer.get_loc(row['company'])
-                            if pd.isnull(bitly_df['bitly_url'].loc[bitly_loc]):
-                                bitlyed_url = bitly_url(row["full_filename"])
-                                bitly_df['bitly_url'].loc[bitly_loc] = bitlyed_url
-                            else:
-                                bitlyed_url = bitly_df['bitly_url'].loc[bitly_loc]
 
                             response += f'\n \n' \
                                         f'\n*Name: {row["name"]} *' \
                                         f'\nPhone Number: {row["phone_number"]}' \
                                         f'\nAbout: {row["quote"]}' \
-                                        f'\nLink: {bitlyed_url}'
+                                        f'\nLink: {bitly_url(row["full_filename"])}'
                             num_matches += 1
                             if num_matches == 5:
                                 break
@@ -264,9 +236,6 @@ class ActionChesedMatch(Action):
                             "Not able to find what you are looking for?" \
                             "\nGet in touch directly with one our our case managers: text +1 (833) 424-3733 on Whatsapp." \
                             "\nIf you ever need this service again, just say 'hi'!"
-
-            with open('bitly_df.pkl', 'wb') as f:
-                pickle.dump(bitly_df, f)
 
             while len(response) > 1600:
                 name_locs = [m.start() for m in re.finditer('Name', response)]
