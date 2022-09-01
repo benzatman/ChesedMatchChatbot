@@ -186,7 +186,7 @@ class ActionChesedMatch(Action):
                 showing = 7
                 if num_results < 7:
                     showing = num_results
-                response += f'Showing {showing} results out of {num_results} matches'
+                response += f'\nShowing {showing} results out of {num_results} matches'
 
                 num_matches = 0
                 if len(chesed_matches_t1) != 0:
