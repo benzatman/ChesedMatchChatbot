@@ -40,7 +40,7 @@ def bitly_url(url):
         'Content-Type': 'application/json',
     }
 
-    data = { "long_url": url, "group_guid": "Bm81gujiye5" }
+    data = { "long_url": url, "domain": "jonec.co", "group_guid": "Bm81gujiye5" }
     data = json.dumps(data)
 
     response = requests.post('https://api-ssl.bitly.com/v4/shorten', headers=headers, data=data)
@@ -229,7 +229,7 @@ class ActionChesedMatch(Action):
                     driver.close()
                     b_url = bitly_url(url)
                     '''
-                    b_url = 'jonec.co/3CHRuji'
+                    b_url = 'https://jonec.co/3CHRuji'
 
                     response += f"\n" \
                                 f"Want more results? Go to this link: {b_url}"
