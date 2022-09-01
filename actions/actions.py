@@ -40,10 +40,10 @@ def bitly_url(url):
         'Content-Type': 'application/json',
     }
 
-    data = { "long_url": url, "domain": "jonec.co", "group_guid": "Bm81gujiye5" }
+    data = { "long_url": url, "domain": "jonec.co", "group_guid": "Om81g0G9ERF" }
     data = json.dumps(data)
 
-    response = requests.post('https://api-ssl.bitly.com/v4/shorten', headers=headers, json=data)
+    response = requests.post('https://api-ssl.bitly.com/v4/shorten', headers=headers, data=data)
     return response.json().get('link')
 
 
