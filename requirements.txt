@@ -6,4 +6,4 @@ geopy==2.2.0
 selenium~=4.4.3
 webdriver_manager~=3.8.3
 undetected_chromedriver~=3.1.5.post
-requests~=2.5.1
+requests~=2.25.1
