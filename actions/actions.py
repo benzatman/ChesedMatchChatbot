@@ -8,13 +8,7 @@ import math
 from geopy.geocoders import Nominatim
 import re
 import requests
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from splinter import Browser
 import os
 import json
 from dotenv import load_dotenv
@@ -213,26 +207,18 @@ class ActionChesedMatch(Action):
                 response += '\n\nHope these help!\n'
 
                 if num_results > showing:
-                    '''
-                    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-                    driver.get('https://www.chesedmatch.org/search_results?')
-                    elem1 = driver.find_element(By.NAME, "location_value")
-                    elem2 = driver.find_element(By.NAME, "q")
-                    elem1.click()
-                    elem1.clear()
-                    elem1.send_keys(city)
-                    elem2.click()
-                    elem2.clear()
-                    elem2.send_keys(category)
-                    elem2.send_keys(Keys.RETURN)
-                    WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.ID, "location_google_maps_homepage"))).click()
-                    url = driver.current_url
-                    driver.close()
-                    b_url = bitly_url(url)
-                    '''
-                    b_url = 'https://jonec.co/3CHRuji'
+                    browser = Browser()
 
-                    response += f"\n" \
+                    browser.visit('https://www.chesedmatch.org/search_results?')
+                    browser.fill('q', category)
+                    browser.fill('location_value', city)
+                    button = browser.find_by_id('location_google_maps_homepage')
+                    button.click()
+                    url = browser.url()
+                    #b_url = 'https://jonec.co/3CHRuji'
+                    b_url = bitly_url(url)
+
+                    response += f"\n\n\n" \
                                 f"Want more results? Go to this link: {b_url}"
 
                 response += "\n \n" \
