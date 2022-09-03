@@ -28,8 +28,7 @@ def latLng_dist(lat_start, lng_start, lat_end, lng_end):
 
 def bitly_url(url):
     load_dotenv()
-    #token = os.getenv('bitly_access_token')
-    token = '121ef30ba780e50c7045dd034bed34392758023c'
+    token = os.getenv('bitly_access_token')
     headers = {
         'Authorization': f'Bearer {token}',
         'Content-Type': 'application/json',
