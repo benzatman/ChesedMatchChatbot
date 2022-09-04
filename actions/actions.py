@@ -158,6 +158,9 @@ class ActionChesedMatch(Action):
                         chesed_matches_t2.append([item, dist])
 
             if len(chesed_matches_t1) == 0 and len(chesed_matches_t2) == 0:
+                location = str(location)
+                comma_locs = [m.start() for m in re.finditer(',', location)]
+                location = location[:comma_locs[0]] + ',' + location[comma_locs[1]:comma_locs[2]]
                 response = f'Sorry I could not find any results for {category} near {location},' \
                            f' please type "start over" and try a different keyword,' \
                            f' if we got your location wrong, please try another location nearby.'
@@ -170,7 +173,7 @@ class ActionChesedMatch(Action):
                 showing = 7
                 if num_results < 7:
                     showing = num_results
-                response += f'\nShowing {showing} results out of {num_results} matches'
+                response += f'\nShowing a few results out of {num_results} matches'
 
                 num_matches = 0
                 if len(chesed_matches_t1) != 0:
@@ -221,18 +224,11 @@ class ActionChesedMatch(Action):
                     url = browser.url
                     b_url = bitly_url(url)
                     """
-                    b_url = 'https://jonec.co/3CHRuji'
+                    b_url = 'https://jonec.co/3QeHbX6'
 
                     response += f"\n \n" \
                                 f"*Want more results?* type 'load more' or go to this link: {b_url}"
 
-                if country == "IL":
-                    phone_number = '+972 52 377 2881'
-                else:
-                    phone_number = '+1 (833) 424-3733'
-                response += "\n \n" \
-                            "Not able to find what you are looking for?" \
-                            f"\nGet in touch directory with one of our case managers by WhatsApping {phone_number}."
 
                 while len(response) > 1600:
                     name_locs = [m.start() for m in re.finditer(re.escape('Name'), response)]
@@ -271,54 +267,62 @@ class ActionLoadMore(Action):
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
         try:
-            matches_remaining = tracker.get_slot('matches_remaining')
-            matches_reported = tracker.get_slot('matches_reported')
-            num_results = tracker.get_slot('num_results')
-            country = tracker.get_slot('country')
-            test_sheet_id_main = '1yf9MjXojfE4HIYct-KlB6H11bCsFSOJ0ecnUvWMJK1s'
-            main_sheet_df = pd.read_csv(f"https://docs.google.com/spreadsheets/d/{test_sheet_id_main}/export?format=csv&")
-            country_df = main_sheet_df[main_sheet_df['country_code'] == country]
-            showing = 7
-            if len(matches_remaining) < 7:
-                showing = len(matches_remaining)
-            response = f'\nShowing {matches_reported + showing} results out of {num_results} matches'
+            message = tracker.latest_message['entities'][0].get('value')
+            if message == "WhatsApp US":
+                country = tracker.get_slot('country')
+                if country == "IL":
+                    phone_number = '+972 52 377 2881'
+                else:
+                    phone_number = '+1 (833) 424-3733'
+                response = f"Get in touch directory with one of our case managers by WhatsApping {phone_number}."
+                matches_remaining = ""
+                matches_reported = ""
+            elif message == "Continue Online":
+                response = "Visit Our ChesedMatch website: https://jonec.co/3QeHbX6"
+                matches_remaining = ""
+                matches_reported = ""
+            elif message == "Load More Results":
 
-            for i in range(showing):
-                row = country_df.iloc[matches_remaining[i][0]]
+                matches_remaining = tracker.get_slot('matches_remaining')
+                matches_reported = tracker.get_slot('matches_reported')
+                if len(matches_remaining) == 0:
+                    response = "Those are all the results for this search, hope you found what you where looking for!"
+                    matches_remaining = ""
+                    matches_reported = ""
+                else:
+                    num_results = tracker.get_slot('num_results')
+                    country = tracker.get_slot('country')
+                    test_sheet_id_main = '1yf9MjXojfE4HIYct-KlB6H11bCsFSOJ0ecnUvWMJK1s'
+                    main_sheet_df = pd.read_csv(f"https://docs.google.com/spreadsheets/d/{test_sheet_id_main}/export?format=csv&")
+                    country_df = main_sheet_df[main_sheet_df['country_code'] == country]
+                    showing = 7
+                    if len(matches_remaining) < 7:
+                        showing = len(matches_remaining)
+                    response = f'\nShowing a few more results out of {num_results} matches'
 
-                response += f'\n \n \n' \
-                            f'\nName: *{row["name"]}*' \
-                            f'\nContact: {row["phone_number"]}' \
-                            f'\nAbout: {row["quote"]}' \
-                            f'\nLink: {bitly_url(row["full_filename"])} \n \n'
+                    for i in range(showing):
+                        row = country_df.iloc[matches_remaining[i][0]]
 
-            response += '\n \nHope these help! '
+                        response += f'\n \n \n' \
+                                    f'\nName: *{row["name"]}*' \
+                                    f'\nContact: {row["phone_number"]}' \
+                                    f'\nAbout: {row["quote"]}' \
+                                    f'\nLink: {bitly_url(row["full_filename"])} \n \n'
 
-            if num_results != (matches_reported + showing):
-                b_url = 'https://jonec.co/3CHRuji'
+                    response += '\n \nHope these help! '
 
-                response += f"\n \n" \
-                            f"*Want more results?* type 'load more' or go to this link: {b_url}"
+                    while len(response) > 1600:
+                        name_locs = [m.start() for m in re.finditer('Name', response)]
+                        end_loc = response.find('Hope these help!')
+                        resp_p1 = response[:name_locs[-1]]
+                        resp_p2 = response[end_loc:]
+                        response = resp_p1 + resp_p2
+                        showing -= 1
 
-            if country == "IL":
-                phone_number = '+972 52 377 2881'
+                    matches_reported = matches_reported + showing
+                    matches_remaining = matches_remaining[showing:]
             else:
-                phone_number = '+1 (833) 424-3733'
-
-            response += "\n \n" \
-                        "Not able to find what you are looking for?" \
-                        f"\nGet in touch directory with one of our case managers by WhatsApping {phone_number}."
-
-            while len(response) > 1600:
-                name_locs = [m.start() for m in re.finditer('Name', response)]
-                end_loc = response.find('Hope these help!')
-                resp_p1 = response[:name_locs[-1]]
-                resp_p2 = response[end_loc:]
-                response = resp_p1 + resp_p2
-                showing -= 1
-
-            matches_reported = matches_reported + showing
-            matches_remaining = matches_remaining[showing:]
+                raise Exception
 
         except Exception as e:
             response = f'Sorry, an error has occurred, please try your request again with different' \
