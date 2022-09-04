@@ -24,9 +24,14 @@ nlu:
     - [Canada](country)
 - intent: load_more
   examples: |
-    - Load More Results
-    - Continue Online
-    - WhatsApp Us
+    - load more
+    - please can you load more
+    - more results
+    - more results please
+    - can you load more
+    - load more please
+    - i want more results
+    - Load more
 - intent: inform_city
   examples: |
     - [Jerusalem](city)

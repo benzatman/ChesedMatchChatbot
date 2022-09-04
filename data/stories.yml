@@ -16,7 +16,6 @@ stories:
     entities:
     - category: shul
   - action: action_chesed_match
-  - action: utter_next_steps
 
 
 - story: chesed_match start over
@@ -35,11 +34,9 @@ stories:
     entities:
     - category: bikur cholim
   - action: action_chesed_match
-  - action: utter_next_steps
 
 
 - story: chesed_match_load_more
   steps:
   - intent: load_more
   - action: action_load_more
-  - action: utter_next_steps

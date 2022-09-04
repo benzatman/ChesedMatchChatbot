@@ -51,8 +51,6 @@ responses:
    Please answer a few questions so we can help you the best we can.
     You can write 'start over' at any point to go back to the main menu.
      Let's get started, select what country you are from from the options below:"
-  utter_next_steps:
-  - text: "Not finding what you’re looking for?"
   utter_ask_country:
   - text: "Please select your country from below"
     buttons:
