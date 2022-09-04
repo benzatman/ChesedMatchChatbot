@@ -83,8 +83,7 @@ class ActionChesedMatch(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
-        #try:
-        if True:
+        try:
             country = tracker.get_slot('country')
             if country == 'USA':
                 country = 'US'
@@ -207,6 +206,7 @@ class ActionChesedMatch(Action):
                 response += '\n\nHope these help!\n'
 
                 if num_results > showing:
+                    """
                     browser = Browser(driver_name='firefox', headless=True)
 
                     browser.visit('https://www.chesedmatch.org/search_results?')
@@ -214,9 +214,10 @@ class ActionChesedMatch(Action):
                     browser.fill('location_value', city)
                     button = browser.find_by_id('location_google_maps_homepage')
                     button.click()
-                    url = browser.url()
-                    #b_url = 'https://jonec.co/3CHRuji'
+                    url = browser.url
                     b_url = bitly_url(url)
+                    """
+                    b_url = 'https://jonec.co/3CHRuji'
 
                     response += f"\n\n\n" \
                                 f"Want more results? Go to this link: {b_url}"
@@ -233,8 +234,7 @@ class ActionChesedMatch(Action):
                 resp_p2 = response[end_loc:]
                 response = resp_p1 + resp_p2
 
-        #except Exception as e:
-        else:
+        except Exception as e:
             response = f'Sorry, an error has occurred, please try your request again with different' \
                        f' location (or fix spelling) ' \
                        f'and keyword. If this message persists, please contact: ' \
