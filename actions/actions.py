@@ -203,7 +203,7 @@ class ActionChesedMatch(Action):
                             if num_matches == 5:
                                 break
 
-                response += '\n\nHope these help!\n'
+                response += '\n\n Hope these help!\n'
 
                 if num_results > showing:
                     """
