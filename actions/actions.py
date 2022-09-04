@@ -157,6 +157,10 @@ class ActionChesedMatch(Action):
                     if dist <= 30:
                         chesed_matches_t2.append([item, dist])
 
+            location = str(location)
+            comma_locs = [m.start() for m in re.finditer(',', location)]
+            location = location[:comma_locs[0]] + ',' + location[comma_locs[1]:comma_locs[2]]
+
             if len(chesed_matches_t1) == 0 and len(chesed_matches_t2) == 0:
                 response = f'Sorry I could not find any results for {category} near {location},' \
                            f' please type "start over" and try a different keyword,' \
@@ -170,7 +174,7 @@ class ActionChesedMatch(Action):
                 showing = 7
                 if num_results < 7:
                     showing = num_results
-                response += f'\nShowing {showing} results out of {num_results} matches'
+                response += f'\nShowing a few of {num_results} matches'
 
                 num_matches = 0
                 if len(chesed_matches_t1) != 0:
@@ -280,7 +284,7 @@ class ActionLoadMore(Action):
             showing = 7
             if len(matches_remaining) < 7:
                 showing = len(matches_remaining)
-            response = f'\nShowing {matches_reported + showing} results out of {num_results} matches'
+            response = f'\nShowing a few of {num_results} matches'
 
             for i in range(showing):
                 row = country_df.iloc[matches_remaining[i][0]]
