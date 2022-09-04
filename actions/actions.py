@@ -262,8 +262,8 @@ class ActionLoadMore(Action):
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
         try:
-            message = tracker.latest_message['entities'][0].get('value')
-            if message == "WhatsApp US":
+            message = tracker.latest_message.get('text')
+            if message == "WhatsApp Us":
                 country = tracker.get_slot('country')
                 if country == "IL":
                     phone_number = '+972 52 377 2881'
