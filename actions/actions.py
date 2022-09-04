@@ -177,7 +177,7 @@ class ActionChesedMatch(Action):
 
                         response += f'\n \n' \
                                     f'\n*Name: {row["name"]} *' \
-                                    f'\nPhone Number: {row["phone_number"]}' \
+                                    f'\nContact: {row["phone_number"]}' \
                                     f'\nAbout: {row["quote"]}' \
                                     f'\nLink: {bitly_url(row["full_filename"])}'
 
@@ -196,7 +196,7 @@ class ActionChesedMatch(Action):
 
                             response += f'\n \n' \
                                         f'\n*Name: {row["name"]} *' \
-                                        f'\nPhone Number: {row["phone_number"]}' \
+                                        f'\nContact: {row["phone_number"]}' \
                                         f'\nAbout: {row["quote"]}' \
                                         f'\nLink: {bitly_url(row["full_filename"])}'
                             num_matches += 1
