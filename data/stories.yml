@@ -1,60 +1,54 @@
 version: "2.0"
-
 stories:
-
 - story: chesed_match
   steps:
   - intent: greet
   - action: utter_intro
   - intent: inform_country
     entities:
-      - country: IL
+    - country: IL
   - action: action_get_city
   - intent: inform_city
     entities:
-      - city: Jerusalem
+    - city: Jerusalem
   - action: action_get_category
   - intent: inform_category
     entities:
-      - category: shul
+    - category: shul
   - action: action_chesed_match
   - intent: load_more
     entities:
-      - matches_remaining: []
-      - matches_reportred: 7
-      - num_results: 50
+    - matches_remaining: []
+    - matches_reportred: 7
+    - num_results: 50
   - action: action_load_more
-
 - story: chesed_match start over
   steps:
   - intent: start_over
   - action: utter_intro
   - intent: inform_country
     entities:
-      - country: US
+    - country: US
   - action: action_get_city
   - intent: inform_city
     entities:
-      - city: Teaneck
+    - city: Teaneck
   - action: action_get_category
   - intent: inform_category
     entities:
-      - category: bikur cholim
+    - category: bikur cholim
   - action: action_chesed_match
   - intent: load_more
     entities:
-      - matches_remaining: []
-      - matches_reportred: 7
-      - num_results: 50
+    - matches_remaining: []
+    - matches_reportred: 7
+    - num_results: 50
   - action: action_load_more
 - story: chesed_match_load_more
   steps:
   - intent: load_more
     entities:
-      - matches_remaining: [ ]
-      - matches_reportred: 7
-      - num_results: 50
+    - matches_remaining: []
+    - matches_reportred: 7
+    - num_results: 50
   - action: action_load_more
-
-
-
