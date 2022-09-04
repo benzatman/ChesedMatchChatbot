@@ -179,7 +179,7 @@ class ActionChesedMatch(Action):
                                     f'\n*Name: {row["name"]} *' \
                                     f'\nContact: {row["phone_number"]}' \
                                     f'\nAbout: {row["quote"]}' \
-                                    f'\nLink: {bitly_url(row["full_filename"])}'
+                                    f'\nLink: {bitly_url(row["full_filename"])} \n \n'
 
                         num_matches += 1
                         if num_matches == 5:
@@ -198,7 +198,7 @@ class ActionChesedMatch(Action):
                                         f'\n*Name: {row["name"]} *' \
                                         f'\nContact: {row["phone_number"]}' \
                                         f'\nAbout: {row["quote"]}' \
-                                        f'\nLink: {bitly_url(row["full_filename"])}'
+                                        f'\nLink: {bitly_url(row["full_filename"])} \n \n'
                             num_matches += 1
                             if num_matches == 5:
                                 break
