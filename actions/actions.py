@@ -83,7 +83,8 @@ class ActionChesedMatch(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
-        try:
+        #try:
+        if True:
             country = tracker.get_slot('country')
             if country == 'USA':
                 country = 'US'
@@ -232,7 +233,8 @@ class ActionChesedMatch(Action):
                 resp_p2 = response[end_loc:]
                 response = resp_p1 + resp_p2
 
-        except Exception as e:
+        #except Exception as e:
+        else:
             response = f'Sorry, an error has occurred, please try your request again with different' \
                        f' location (or fix spelling) ' \
                        f'and keyword. If this message persists, please contact: ' \
