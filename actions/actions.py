@@ -224,11 +224,6 @@ class ActionChesedMatch(Action):
                     url = browser.url
                     b_url = bitly_url(url)
                     """
-                    b_url = 'https://jonec.co/3QeHbX6'
-
-                    response += f"\n \n" \
-                                f"*Want more results?* type 'load more' or go to this link: {b_url}"
-
 
                 while len(response) > 1600:
                     name_locs = [m.start() for m in re.finditer(re.escape('Name'), response)]
