@@ -18,6 +18,12 @@ stories:
     entities:
       - category: shul
   - action: action_chesed_match
+  - intent: load_more
+    entities:
+      - matches_remaining: []
+      - matches_reportred: 7
+      - num_results: 50
+  - action: action_load_more
 
 - story: chesed_match start over
   steps:
@@ -35,5 +41,20 @@ stories:
     entities:
       - category: bikur cholim
   - action: action_chesed_match
+  - intent: load_more
+    entities:
+      - matches_remaining: []
+      - matches_reportred: 7
+      - num_results: 50
+  - action: action_load_more
+- story: chesed_match
+  steps:
+  - intent: load_more
+    entities:
+      - matches_remaining: [ ]
+      - matches_reportred: 7
+      - num_results: 50
+  - action: action_load_more
+
 
 

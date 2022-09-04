@@ -6,6 +6,7 @@ intents:
   - inform_country
   - inform_category
   - start_over
+  - load_more
 
 entities:
   - country:
@@ -26,6 +27,22 @@ slots:
     initial_value: null
     auto_fill: false
     influence_conversation: false
+  matches_remaining:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: false
+    influence_conversation: false
+  matches_reported:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: false
+    influence_conversation: false
+  num_results:
+    type: rasa.shared.core.slots.AnySlot
+    initial_value: null
+    auto_fill: false
+    influence_conversation: false
+
 
 
 responses:
@@ -75,6 +92,7 @@ actions:
   - action_get_city
   - action_get_category
   - action_chesed_match
+  - action_load_more
 
 session_config:
   session_expiration_time: 60

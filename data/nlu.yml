@@ -22,6 +22,15 @@ nlu:
     - [USA](country)
     - [Israel](country)
     - [Canada](country)
+- intent: load_more
+  examples: |
+    - load more
+    - please can you load more
+    - more results
+    - more results please
+    - can you load more
+    - load more please
+    - i want more results
 - intent: inform_city
   examples: |
     - [Jerusalem](city)
