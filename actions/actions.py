@@ -207,7 +207,7 @@ class ActionChesedMatch(Action):
                 response += '\n\nHope these help!\n'
 
                 if num_results > showing:
-                    browser = Browser()
+                    browser = Browser('firefox')
 
                     browser.visit('https://www.chesedmatch.org/search_results?')
                     browser.fill('q', category)
