@@ -175,7 +175,7 @@ class ActionChesedMatch(Action):
                     for match in chesed_matches_t1_sorted:
                         row = country_df.iloc[match[0]]
 
-                        response += f'\n \n' \
+                        response += f'\n \n \n' \
                                     f'\n*Name: {row["name"]} *' \
                                     f'\nContact: {row["phone_number"]}' \
                                     f'\nAbout: {row["quote"]}' \
@@ -194,7 +194,7 @@ class ActionChesedMatch(Action):
                         for match in chesed_matches_t2_sorted:
                             row = country_df.iloc[match[0]]
 
-                            response += f'\n \n' \
+                            response += f'\n \n \n' \
                                         f'\n*Name: {row["name"]} *' \
                                         f'\nContact: {row["phone_number"]}' \
                                         f'\nAbout: {row["quote"]}' \
@@ -203,7 +203,7 @@ class ActionChesedMatch(Action):
                             if num_matches == 5:
                                 break
 
-                response += '\n \nHope these help!\n '
+                response += '\n \nHope these help! '
 
                 if num_results > showing:
                     """
