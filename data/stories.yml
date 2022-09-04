@@ -47,7 +47,7 @@ stories:
       - matches_reportred: 7
       - num_results: 50
   - action: action_load_more
-- story: chesed_match
+- story: chesed_match_load_more
   steps:
   - intent: load_more
     entities:
