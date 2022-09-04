@@ -31,6 +31,7 @@ nlu:
     - can you load more
     - load more please
     - i want more results
+    - Load more
 - intent: inform_city
   examples: |
     - [Jerusalem](city)
@@ -601,6 +602,8 @@ nlu:
     - [New York](city)
     - [Beit shemesh](city)
     - [New  York](city)
+    - [Bet Shemesh](city)
+    - [Manhattan](city)
 - intent: inform_category
   examples: |
     - [gemach](category)
