@@ -176,10 +176,10 @@ class ActionChesedMatch(Action):
                         row = country_df.iloc[match[0]]
 
                         response += f'\n \n' \
-                                    f'\n *Name: {row["name"]} *' \
-                                    f'\n Phone Number: {row["phone_number"]}' \
-                                    f'\n About: {row["quote"]}' \
-                                    f'\n Link: {bitly_url(row["full_filename"])}'
+                                    f'\n*Name: {row["name"]} *' \
+                                    f'\nPhone Number: {row["phone_number"]}' \
+                                    f'\nAbout: {row["quote"]}' \
+                                    f'\nLink: {bitly_url(row["full_filename"])}'
 
                         num_matches += 1
                         if num_matches == 5:
@@ -203,7 +203,7 @@ class ActionChesedMatch(Action):
                             if num_matches == 5:
                                 break
 
-                response += '\n\n Hope these help!\n'
+                response += '\n \nHope these help!\n '
 
                 if num_results > showing:
                     """
@@ -219,8 +219,8 @@ class ActionChesedMatch(Action):
                     """
                     b_url = 'https://jonec.co/3CHRuji'
 
-                    response += f"\n\n\n" \
-                                f"Want more results? Go to this link: {b_url}"
+                    response += f"\n \n \n" \
+                                f"*Want more results?* Go to this link: {b_url}"
 
                 response += "\n \n" \
                             "Not able to find what you are looking for?" \
