@@ -86,9 +86,10 @@ responses:
       title: UAE
     text: Please select your country from below
 actions:
-- action_get_city
-- action_get_category
-- action_chesed_match
-- action_load_more
-forms: {}
-e2e_actions: []
+  - action_get_city
+  - action_get_category
+  - action_chesed_match
+  - action_load_more
+  - action_intro
+
+

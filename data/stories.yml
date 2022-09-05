@@ -3,7 +3,7 @@ stories:
 - story: chesed_match
   steps:
   - intent: greet
-  - action: utter_intro
+  - action: action_intro
   - intent: inform_country
     entities:
     - country: Israel
@@ -19,7 +19,7 @@ stories:
 - story: chesed_match start over
   steps:
   - intent: start_over
-  - action: utter_intro
+  - action: action_intro
   - intent: inform_country
     entities:
     - country: US
