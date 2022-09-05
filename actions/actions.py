@@ -225,7 +225,7 @@ class ActionChesedMatch(Action):
                     url = browser.url
                     b_url = bitly_url(url)
                     """
-                    b_url = 'https://jonec.co/3CHRuji'
+                    b_url = 'https://jonec.co/3QeHbX6'
 
                     response += f"\n \n" \
                                 f"*Want more results?* type 'load more' or go to this link: {b_url}"
