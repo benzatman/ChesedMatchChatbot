@@ -17,12 +17,12 @@ nlu:
     - good afternoon
     - Hi
     - [Yo](city)
+    - שלום
 - intent: inform_country
   examples: |
     - [USA](country)
     - [Israel](country)
     - [Canada](country)
-    - [Israel](country)
     - [israel](country)
 - intent: load_more
   examples: |
@@ -1038,6 +1038,7 @@ nlu:
     - [Mental health](category)
     - [Hatzala](category)
     - [wedding](category)
+    - [Baby things](category)
 - intent: start_over
   examples: |
     - start over
