@@ -159,7 +159,8 @@ class ActionChesedMatch(Action):
 
             location = str(location)
             comma_locs = [m.start() for m in re.finditer(',', location)]
-            location = location[:comma_locs[0]] + location[comma_locs[1]:comma_locs[2]]
+            if len(comma_locs) == 3:
+                location = location[:comma_locs[0]] + location[comma_locs[1]:comma_locs[2]]
 
             if len(chesed_matches_t1) == 0 and len(chesed_matches_t2) == 0:
                 response = f'Sorry I could not find any results for {category} near {location},' \
