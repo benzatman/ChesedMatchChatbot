@@ -1039,6 +1039,7 @@ nlu:
     - [Hatzala](category)
     - [wedding](category)
     - [Baby things](category)
+    - [Divorce](category)
 - intent: start_over
   examples: |
     - start over
