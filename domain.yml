@@ -49,7 +49,7 @@ slots:
     influence_conversation: false
 responses:
   utter_intro:
-  - text: "Hey! Welcome to the Just One Chesed ChesedMatch ChatBot. \\n Please answer a few questions so we can help you the best we can. You can write 'start over' at any point to go back to the main menu. \\n Let's get started, select what country you are from from the options below:"
+  - text: "Hey! Welcome to the Just One Chesed ChesedMatch ChatBot.   Please answer a few questions so we can help you the best we can. You can write 'start over' at any point to go back to the main menu.    Let's get started, select what country you are from from the options below:"
   utter_ask_country:
   - buttons:
     - payload: '/inform_country{{"country": "US"}}'
