@@ -23,6 +23,7 @@ nlu:
     - [Israel](country)
     - [Canada](country)
     - [Israel](category)
+    - [israel](country)
 - intent: load_more
   examples: |
     - load more
