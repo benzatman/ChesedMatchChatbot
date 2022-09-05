@@ -299,7 +299,7 @@ class ActionLoadMore(Action):
             response += '\n \nHope these help! '
 
             if num_results != (matches_reported + showing):
-                b_url = 'https://jonec.co/3CHRuji'
+                b_url = 'https://jonec.co/3QeHbX6'
 
                 response += f"\n \n" \
                             f"*Want more results?* type 'load more' or go to this link: {b_url}"
