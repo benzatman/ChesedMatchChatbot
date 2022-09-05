@@ -22,6 +22,7 @@ nlu:
     - [USA](country)
     - [Israel](country)
     - [Canada](country)
+    - [Israel](category)
 - intent: load_more
   examples: |
     - load more
@@ -611,7 +612,6 @@ nlu:
     - [simcha gemach](category)
     - [help](category)
     - [schools](category)
-    - [Israel](category)
     - [bikur cholim](category)
     - [religious](category)
     - [hatzala](category)
