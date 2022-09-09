@@ -270,10 +270,15 @@ class ActionChesedMatch(Action):
                 matches_remaining = all_matches[showing:]
 
         except Exception as e:
-            response = f'Sorry, an error has occurred, please try your request again with different' \
-                       f' location (or fix spelling) ' \
-                       f'and keyword. If this message persists, please contact: ' \
-                       f'+1 (833) 424-3733 on Whatsapp to let us know and tell us your facing error: {e}. '
+            if 'latitude' in e:
+                response = 'Sorry, an error has occurred. Please type “start over”' \
+                           ' and check the spelling of your responses. If this message persists, please contact: ' \
+                           '+1 (833) 424-3733 on Whatsapp to let us know'
+            else:
+                response = f'Sorry, an error has occurred, please try your request again with different' \
+                           f' location (or fix spelling) ' \
+                           f'and keyword. If this message persists, please contact: ' \
+                           f'+1 (833) 424-3733 on Whatsapp to let us know and tell us your facing error: {e}. '
             matches_remaining = ""
             matches_reported = ""
             num_results = ""
