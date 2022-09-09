@@ -270,7 +270,7 @@ class ActionChesedMatch(Action):
                 matches_remaining = all_matches[showing:]
 
         except Exception as e:
-            if 'latitude' in e:
+            if str(e).find('latitude') != -1:
                 response = 'Sorry, an error has occurred. Please type “start over”' \
                            ' and check the spelling of your responses. If this message persists, please contact: ' \
                            '+1 (833) 424-3733 on Whatsapp to let us know'
