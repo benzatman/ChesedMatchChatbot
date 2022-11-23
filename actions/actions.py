@@ -118,9 +118,10 @@ class ActionChesedMatch(Action):
             location = geolocator.geocode(city + ' ' + country)
             lat_start = location.latitude
             lng_start = location.longitude
-
-            test_sheet_id_main = '1yf9MjXojfE4HIYct-KlB6H11bCsFSOJ0ecnUvWMJK1s'
-            main_sheet_df = pd.read_csv(f"https://docs.google.com/spreadsheets/d/{test_sheet_id_main}/export?format=csv&")
+            load_dotenv()
+            test_sheet_id_main = os.getenv('test_sheet_id_main')
+            gid = "406277255"
+            main_sheet_df = pd.read_csv(f"https://docs.google.com/spreadsheets/d/{test_sheet_id_main}/export?format=csv&gid={gid}")
 
             country_df = main_sheet_df[main_sheet_df['country_code'] == country]
 
