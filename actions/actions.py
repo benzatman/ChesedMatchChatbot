@@ -50,9 +50,9 @@ class ActionIntro(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
-        text = "Hey! Welcome to the Just One Chesed ChesedMatch ChatBot. \n \n \n" \
+        text = "Hey! Welcome to the Just One Chesed ChesedMatch ChatBot. \n" \
                "Please answer a few questions so we can help you the best we can." \
-               " You can write 'start over' at any point to go back to the main menu. \n \n \n" \
+               " You can write 'start over' at any point to go back to the main menu. \n" \
                "Let's get started, select what country you are from from the options below:"
 
         dispatcher.utter_message(text=text)
