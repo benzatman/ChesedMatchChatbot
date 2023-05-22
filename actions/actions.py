@@ -102,124 +102,105 @@ class ActionChesedMatch(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
-        #try:
-        country = tracker.get_slot('country')
-        if country == 'USA':
-            country = 'US'
-        elif country == 'Israel':
-            country = 'IL'
-        elif country == 'Canada':
-            country = 'CA'
+        try:
+            country = tracker.get_slot('country')
+            if country == 'USA':
+                country = 'US'
+            elif country == 'Israel':
+                country = 'IL'
+            elif country == 'Canada':
+                country = 'CA'
 
-        city = tracker.get_slot('city')
-        category = tracker.latest_message['entities'][0].get('value')
+            city = tracker.get_slot('city')
+            category = tracker.latest_message['entities'][0].get('value')
 
-        geolocator = Nominatim(user_agent='info@justonechesed.org')
-        location = geolocator.geocode(city + ' ' + country)
-        lat_start = location.latitude
-        lng_start = location.longitude
-        test_sheet_id_main = '1yf9MjXojfE4HIYct-KlB6H11bCsFSOJ0ecnUvWMJK1s'
-        gid = "406277255"
-        main_sheet_df = pd.read_csv(f"https://docs.google.com/spreadsheets/d/{test_sheet_id_main}/export?format=csv&gid={gid}")
-        main_sheet_df = main_sheet_df.fillna(' ')
+            geolocator = Nominatim(user_agent='info@justonechesed.org')
+            location = geolocator.geocode(city + ' ' + country)
+            lat_start = location.latitude
+            lng_start = location.longitude
+            test_sheet_id_main = '1yf9MjXojfE4HIYct-KlB6H11bCsFSOJ0ecnUvWMJK1s'
+            gid = "406277255"
+            main_sheet_df = pd.read_csv(f"https://docs.google.com/spreadsheets/d/{test_sheet_id_main}/export?format=csv&gid={gid}")
+            #main_sheet_df = main_sheet_df.fillna(' ')
 
-        country_df = main_sheet_df[main_sheet_df['country_code'] == country]
+            country_df = main_sheet_df[main_sheet_df['country_code'] == country]
 
-        cols_to_search = ['name', 'quote', 'about_me', 'services', 'search_description', 'custom_member_keywords']
+            cols_to_search = ['name', 'quote', 'about_me', 'services', 'search_description', 'custom_member_keywords']
 
-        item_category_match_index_t1 = []
-        item_category_match_index_t2 = []
-
-        indexer = 0
-        for col in cols_to_search:
-            if col == 'name':
-                for item in country_df[col]:
-                    if fuzz.partial_ratio(category, str(item)) >= 85:
-                        if indexer not in item_category_match_index_t1:
-                            item_category_match_index_t1.append(indexer)
-
-                    indexer += 1
-            else:
-                for item in country_df[col]:
-                    if fuzz.partial_ratio(category, str(item)) >= 85:
-                        if indexer not in item_category_match_index_t2:
-                            item_category_match_index_t2.append(indexer)
-
-                    indexer += 1
+            item_category_match_index_t1 = []
+            item_category_match_index_t2 = []
 
             indexer = 0
+            for col in cols_to_search:
+                if col == 'name':
+                    for item in country_df[col]:
+                        if fuzz.partial_ratio(category, str(item)) >= 85:
+                            if indexer not in item_category_match_index_t1:
+                                item_category_match_index_t1.append(indexer)
 
-        num_results = len(item_category_match_index_t1) + len(item_category_match_index_t2)
-
-        chesed_matches_t1 = []
-        if len(item_category_match_index_t1) == 0:
-            pass
-        else:
-            for item in item_category_match_index_t1:
-                latLng = [country_df.iloc[item]['Lat'], country_df.iloc[item]['Lon']]
-                lat_end = latLng[0]
-                lng_end = latLng[1]
-                dist = latLng_dist(float(lat_start), float(lng_start), float(lat_end), float(lng_end))
-                if dist <= 30:
-                    chesed_matches_t1.append([item, dist])
-
-        chesed_matches_t2 = []
-        if len(item_category_match_index_t2) == 0:
-            pass
-        else:
-            for item in item_category_match_index_t2:
-                latLng = [country_df.iloc[item]['Lat'], country_df.iloc[item]['Lon']]
-                lat_end = latLng[0]
-                lng_end = latLng[1]
-
-                dist = latLng_dist(float(lat_start), float(lng_start), float(lat_end), float(lng_end))
-                if dist <= 30:
-                    chesed_matches_t2.append([item, dist])
-
-        location = str(location)
-        comma_locs = [m.start() for m in re.finditer(',', location)]
-        if len(comma_locs) == 3:
-            location = location[:comma_locs[0]] + location[comma_locs[1]:comma_locs[2]]
-
-        if len(chesed_matches_t1) == 0 and len(chesed_matches_t2) == 0:
-            response = f'Sorry I could not find any results for {category} near {location},' \
-                       f' please type "start over" and try a different keyword,' \
-                       f' if we got your location wrong, please try another location nearby.'
-            matches_remaining = ""
-            matches_reported = ""
-            num_results = ""
-            country = ""
-        else:
-            response = f'I searched for {category} near {location} and this is what I found: '
-            showing = 7
-            if num_results < 7:
-                showing = num_results
-            response += f'\nShowing a few of {num_results} matches'
-
-            num_matches = 0
-            if len(chesed_matches_t1) != 0:
-                chesed_matches_t1_sorted = sorted(chesed_matches_t1, key=lambda x: x[1])
-
-                for match in chesed_matches_t1_sorted:
-                    row = country_df.iloc[match[0]]
-
-                    response += f'\n \n \n' \
-                                f'\nName: *{row["name"]}*' \
-                                f'\nContact: {row["phone_number"]}' \
-                                f'\nAbout: {row["quote"]}' \
-                                f'\nLink: {bitly_url(row["full_filename"])} \n \n'
-
-                    num_matches += 1
-                    if num_matches == 7:
-                        break
-
-            if len(chesed_matches_t2) != 0:
-                chesed_matches_t2_sorted = sorted(chesed_matches_t2, key=lambda x: x[1])
-
-                if num_matches == 7:
-                    pass
+                        indexer += 1
                 else:
-                    for match in chesed_matches_t2_sorted:
+                    for item in country_df[col]:
+                        if fuzz.partial_ratio(category, str(item)) >= 85:
+                            if indexer not in item_category_match_index_t2:
+                                item_category_match_index_t2.append(indexer)
+
+                        indexer += 1
+
+                indexer = 0
+
+            num_results = len(item_category_match_index_t1) + len(item_category_match_index_t2)
+
+            chesed_matches_t1 = []
+            if len(item_category_match_index_t1) == 0:
+                pass
+            else:
+                for item in item_category_match_index_t1:
+                    latLng = [country_df.iloc[item]['Lat'], country_df.iloc[item]['Lon']]
+                    lat_end = latLng[0]
+                    lng_end = latLng[1]
+                    dist = latLng_dist(float(lat_start), float(lng_start), float(lat_end), float(lng_end))
+                    if dist <= 30:
+                        chesed_matches_t1.append([item, dist])
+
+            chesed_matches_t2 = []
+            if len(item_category_match_index_t2) == 0:
+                pass
+            else:
+                for item in item_category_match_index_t2:
+                    latLng = [country_df.iloc[item]['Lat'], country_df.iloc[item]['Lon']]
+                    lat_end = latLng[0]
+                    lng_end = latLng[1]
+
+                    dist = latLng_dist(float(lat_start), float(lng_start), float(lat_end), float(lng_end))
+                    if dist <= 30:
+                        chesed_matches_t2.append([item, dist])
+
+            location = str(location)
+            comma_locs = [m.start() for m in re.finditer(',', location)]
+            if len(comma_locs) == 3:
+                location = location[:comma_locs[0]] + location[comma_locs[1]:comma_locs[2]]
+
+            if len(chesed_matches_t1) == 0 and len(chesed_matches_t2) == 0:
+                response = f'Sorry I could not find any results for {category} near {location},' \
+                           f' please type "start over" and try a different keyword,' \
+                           f' if we got your location wrong, please try another location nearby.'
+                matches_remaining = ""
+                matches_reported = ""
+                num_results = ""
+                country = ""
+            else:
+                response = f'I searched for {category} near {location} and this is what I found: '
+                showing = 7
+                if num_results < 7:
+                    showing = num_results
+                response += f'\nShowing a few of {num_results} matches'
+
+                num_matches = 0
+                if len(chesed_matches_t1) != 0:
+                    chesed_matches_t1_sorted = sorted(chesed_matches_t1, key=lambda x: x[1])
+
+                    for match in chesed_matches_t1_sorted:
                         row = country_df.iloc[match[0]]
 
                         response += f'\n \n \n' \
@@ -227,48 +208,67 @@ class ActionChesedMatch(Action):
                                     f'\nContact: {row["phone_number"]}' \
                                     f'\nAbout: {row["quote"]}' \
                                     f'\nLink: {bitly_url(row["full_filename"])} \n \n'
+
                         num_matches += 1
                         if num_matches == 7:
                             break
 
-            response += '\n \nHope these help! '
+                if len(chesed_matches_t2) != 0:
+                    chesed_matches_t2_sorted = sorted(chesed_matches_t2, key=lambda x: x[1])
 
-            if num_results > showing:
-                """
-                browser = Browser(driver_name='firefox', headless=True)
-                browser.visit('https://www.chesedmatch.org/search_results?')
-                browser.fill('q', category)
-                browser.fill('location_value', city)
-                button = browser.find_by_id('location_google_maps_homepage')
-                button.click()
-                url = browser.url
-                b_url = bitly_url(url)
-                """
-                b_url = 'https://jonec.co/3QeHbX6'
+                    if num_matches == 7:
+                        pass
+                    else:
+                        for match in chesed_matches_t2_sorted:
+                            row = country_df.iloc[match[0]]
 
-                response += f"\n \n" \
-                            f"*Want more results?* type 'load more' or go to this link: {b_url}"
+                            response += f'\n \n \n' \
+                                        f'\nName: *{row["name"]}*' \
+                                        f'\nContact: {row["phone_number"]}' \
+                                        f'\nAbout: {row["quote"]}' \
+                                        f'\nLink: {bitly_url(row["full_filename"])} \n \n'
+                            num_matches += 1
+                            if num_matches == 7:
+                                break
 
-            if country == "IL":
-                phone_number = '+972 52 377 2881'
-            else:
-                phone_number = '+1 (833) 424-3733'
-            response += "\n \n" \
-                        "Not able to find what you are looking for?" \
-                        f"\nGet in touch directory with one of our case managers by WhatsApping {phone_number}."
+                response += '\n \nHope these help! '
 
-            while len(response) > 1600:
-                name_locs = [m.start() for m in re.finditer(re.escape('Name'), response)]
-                end_loc = response.find('Hope these help!')
-                resp_p1 = response[:name_locs[-1]]
-                resp_p2 = response[end_loc:]
-                response = resp_p1 + resp_p2
-                showing -= 1
+                if num_results > showing:
+                    """
+                    browser = Browser(driver_name='firefox', headless=True)
+                    browser.visit('https://www.chesedmatch.org/search_results?')
+                    browser.fill('q', category)
+                    browser.fill('location_value', city)
+                    button = browser.find_by_id('location_google_maps_homepage')
+                    button.click()
+                    url = browser.url
+                    b_url = bitly_url(url)
+                    """
+                    b_url = 'https://jonec.co/3QeHbX6'
 
-            all_matches = chesed_matches_t1 + chesed_matches_t2
-            matches_reported = showing
-            matches_remaining = all_matches[showing:]
-        """
+                    response += f"\n \n" \
+                                f"*Want more results?* type 'load more' or go to this link: {b_url}"
+
+                if country == "IL":
+                    phone_number = '+972 52 377 2881'
+                else:
+                    phone_number = '+1 (833) 424-3733'
+                response += "\n \n" \
+                            "Not able to find what you are looking for?" \
+                            f"\nGet in touch directory with one of our case managers by WhatsApping {phone_number}."
+
+                while len(response) > 1600:
+                    name_locs = [m.start() for m in re.finditer(re.escape('Name'), response)]
+                    end_loc = response.find('Hope these help!')
+                    resp_p1 = response[:name_locs[-1]]
+                    resp_p2 = response[end_loc:]
+                    response = resp_p1 + resp_p2
+                    showing -= 1
+
+                all_matches = chesed_matches_t1 + chesed_matches_t2
+                matches_reported = showing
+                matches_remaining = all_matches[showing:]
+
         except Exception as e:
             if str(e).find('latitude') != -1:
                 response = 'Sorry, an error has occurred. Please type “start over”' \
@@ -284,7 +284,7 @@ class ActionChesedMatch(Action):
             matches_reported = ""
             num_results = ""
             country = ""
-        """
+
 
         dispatcher.utter_message(text=response)
 
