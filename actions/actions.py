@@ -161,13 +161,13 @@ class ActionChesedMatch(Action):
                     lng_end = latLng[1]
                     cordinates = [lat_end, lng_end]
                     bad_format = False
-                    for c in cordinates:
-                        for l in c:
-                            if l not in '.0987654321':
-                                bad_format = True
+                    try:
+                        dist = latLng_dist(float(lat_start), float(lng_start), float(lat_end), float(lng_end))
+                    except Exception as e:
+                        bad_format = True
+                        dist = 100
                     if bad_format:
                         continue
-                    dist = latLng_dist(float(lat_start), float(lng_start), float(lat_end), float(lng_end))
                     if dist <= 30:
                         chesed_matches_t1.append([item, dist])
 
@@ -181,13 +181,14 @@ class ActionChesedMatch(Action):
                     lng_end = latLng[1]
                     cordinates = [lat_end, lng_end]
                     bad_format = False
-                    for c in cordinates:
-                        for l in c:
-                            if l not in '.0987654321':
-                                bad_format = True
+                    try:
+                        dist = latLng_dist(float(lat_start), float(lng_start), float(lat_end), float(lng_end))
+                    except Exception as e:
+                        bad_format = True
+                        dist = 100
                     if bad_format:
                         continue
-                    dist = latLng_dist(float(lat_start), float(lng_start), float(lat_end), float(lng_end))
+
                     if dist <= 30:
                         chesed_matches_t2.append([item, dist])
 
