@@ -36,3 +36,17 @@ stories:
   steps:
   - intent: load_more
   - action: action_load_more
+- story: chesed_match auto start
+  steps:
+  - intent: inform_country
+    entities:
+    - country: US
+  - action: action_get_city
+  - intent: inform_city
+    entities:
+    - city: Chicago
+  - action: action_get_category
+  - intent: inform_category
+    entities:
+    - category: wedding
+  - action: action_chesed_match
