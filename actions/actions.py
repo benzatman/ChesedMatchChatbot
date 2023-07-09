@@ -87,7 +87,7 @@ class ActionGetCategory(Action):
 
         city = tracker.latest_message['entities'][0].get('value')
 
-        dispatcher.utter_message(text="Please type the organization/category/keyword" 
+        dispatcher.utter_message(text="Please type the organization/category/keyword (one word)" 
                                       " of the service you are looking for.")
 
         return [SlotSet("city", city)]
@@ -271,7 +271,7 @@ class ActionChesedMatch(Action):
                     phone_number = '+1 (833) 424-3733'
                 response += "\n \n" \
                             "Not able to find what you are looking for?" \
-                            f"\nGet in touch directory with one of our case managers by WhatsApping {phone_number}."
+                            f"\nGet in touch directly with one of our case managers by WhatsApping {phone_number}."
 
                 while len(response) > 1600:
                     name_locs = [m.start() for m in re.finditer(re.escape('Name'), response)]
@@ -353,7 +353,7 @@ class ActionLoadMore(Action):
 
             response += "\n \n" \
                         "Not able to find what you are looking for?" \
-                        f"\nGet in touch directory with one of our case managers by WhatsApping {phone_number}."
+                        f"\nGet in touch directly with one of our case managers by WhatsApping {phone_number}."
 
             while len(response) > 1600:
                 name_locs = [m.start() for m in re.finditer('Name', response)]
